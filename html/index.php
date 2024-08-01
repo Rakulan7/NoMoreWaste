@@ -8,7 +8,7 @@ include 'include/header.php';
     <div class="container">
         <h1 class="highlight">NoMoreWaste</h1>
         <p class="highlight">Combattre le gaspillage, une étape à la fois</p>
-        <a href="https://volunteer.nomorewaste.fr/" class="btn btn-primary btn-lg">Rejoignez-nous</a>
+        <a href="https://volunteer.nomorewaste.fr/" class="btn btn-success btn-lg">Rejoignez-nous</a>
     </div>
 </header>
 
