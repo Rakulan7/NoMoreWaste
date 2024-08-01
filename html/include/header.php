@@ -1,4 +1,3 @@
-<!-- header.php -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -12,7 +11,7 @@
         }
 
         .hero {
-            background: url('../img/banner.jpg') center center no-repeat;
+            background: url('../img/banner/banner.jpg') center center no-repeat;
             background-size: cover;
             color: black;
             height: 70vh;
@@ -42,75 +41,71 @@
         }
 
         .footer {
-            background-color: #1c1c1c;
-            color: white;
-            padding: 2rem 0;
+            background-color: #d4edda; /* Light green background */
+            color: #343a40; /* Dark text color for contrast */
         }
 
-        .footer .text-uppercase {
-            text-transform: uppercase;
-            font-weight: bold;
+        .footer-logo {
+            width: 120px; /* Adjust the size of the logo */
+            margin-bottom: 1rem;
+        }
+
+        .footer h5 {
+            font-size: 1.25rem;
             margin-bottom: 1rem;
         }
 
         .footer p {
             margin-bottom: 1rem;
-            color: #bbb;
         }
 
         .footer a {
-            color: #ddd;
+            color: #343a40;
             text-decoration: none;
         }
 
         .footer a:hover {
-            color: #fff;
-            text-decoration: none;
+            color: #0056b3; /* Darker shade on hover */
+            text-decoration: underline;
         }
 
-        .footer ul {
+        .footer .text-uppercase {
+            text-transform: uppercase;
+        }
+
+        .footer .list-unstyled {
             padding-left: 0;
-            list-style: none;
         }
 
-        .footer ul li {
+        .footer .list-unstyled li {
             margin-bottom: 0.5rem;
         }
 
-        .footer .bg-secondary {
-            background-color: #111 !important;
+        .footer .bg-success {
+            background-color: #28a745 !important; /* Green background for footer bottom section */
         }
 
-        .footer .container {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+        .navbar-custom {
+            background-color: #28a745; /* Match the green background of the footer */
         }
 
-        .footer-logo {
-            width: 100px; /* Adjust the size as needed */
-            margin-bottom: 1rem;
+        .navbar-custom .navbar-brand,
+        .navbar-custom .nav-link {
+            color: #343a40; /* Dark text color for contrast */
         }
 
-        @media (max-width: 768px) {
-            .footer .container {
-                flex-direction: column;
-                text-align: center;
-            }
-            .footer .row {
-                margin-bottom: 2rem;
-            }
+        .navbar-custom .navbar-brand:hover,
+        .navbar-custom .nav-link:hover {
+            color: #0056b3; /* Darker shade on hover */
         }
     </style>
-
-
 </head>
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">NoMoreWaste</a>
+            <a class="navbar-brand" href="https://nomorewaste.fr/">NoMoreWaste</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
