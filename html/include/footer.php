@@ -18,7 +18,7 @@
                         <a href="terms.php" class="text-dark">Conditions d'utilisation</a>
                     </li>
                     <li>
-                        <a href="#!" class="text-dark">Politique de confidentialité</a>
+                        <a href="privacy.php" class="text-dark">Politique de confidentialité</a>
                     </li>
                     <li>
                         <a href="#!" class="text-dark">Politique des cookies</a>
