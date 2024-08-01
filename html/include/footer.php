@@ -15,7 +15,7 @@
                 <h5 class="text-uppercase font-weight-bold">Mentions Légales</h5>
                 <ul class="list-unstyled">
                     <li>
-                        <a href="#!" class="text-dark">Conditions d'utilisation</a>
+                        <a href="terms.php" class="text-dark">Conditions d'utilisation</a>
                     </li>
                     <li>
                         <a href="#!" class="text-dark">Politique de confidentialité</a>

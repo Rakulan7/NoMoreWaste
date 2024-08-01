@@ -7,6 +7,7 @@
     <title><?php echo isset($page_title) ? $page_title : ''; ?>NoMoreWaste</title>
     <link rel="icon" type="image/x-icon" href="/img/banner/favicon.ico"> <!-- Ajoutez cette ligne -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/css/style.css" rel="stylesheet">
     <style>
         body {
             padding-top: 56px;
@@ -105,7 +106,7 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="#">NoMoreWaste</a>
+            <a class="navbar-brand" href="/">NoMoreWaste</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
