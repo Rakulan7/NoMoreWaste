@@ -21,7 +21,7 @@
                         <a href="privacy.php" class="text-dark">Politique de confidentialité</a>
                     </li>
                     <li>
-                        <a href="#!" class="text-dark">Politique des cookies</a>
+                        <a href="cookies.php" class="text-dark">Politique des cookies</a>
                     </li>
                     <li>
                         <a href="#!" class="text-dark">Licences</a>
