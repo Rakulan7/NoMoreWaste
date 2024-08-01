@@ -2,7 +2,7 @@
 class Database {
     private $host = "localhost";
     private $username = "root";
-    private $password = "";
+    private $password = "Respons11!";
     private $database = "no_more_waste";
     public $conn;
 
