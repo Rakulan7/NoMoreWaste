@@ -24,7 +24,7 @@
                         <a href="cookies.php" class="text-dark">Politique des cookies</a>
                     </li>
                     <li>
-                        <a href="#!" class="text-dark">Licences</a>
+                        <a href="licences.php" class="text-dark">Licences</a>
                     </li>
                 </ul>
             </div>
