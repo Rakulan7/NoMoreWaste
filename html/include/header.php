@@ -1,9 +1,11 @@
+<!-- header.php -->
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo isset($page_title) ? $page_title : ''; ?>NoMoreWaste</title>
+    <link rel="icon" type="image/x-icon" href="/img/banner/favicon.ico"> <!-- Ajoutez cette ligne -->
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -85,17 +87,15 @@
             background-color: #28a745 !important; /* Green background for footer bottom section */
         }
 
-        .navbar-custom {
-            background-color: #28a745; /* Match the green background of the footer */
+        .navbar {
+            background-color: #28a745; /* Light green background for the navbar */
         }
 
-        .navbar-custom .navbar-brand,
-        .navbar-custom .nav-link {
+        .navbar-brand, .nav-link {
             color: #343a40; /* Dark text color for contrast */
         }
 
-        .navbar-custom .navbar-brand:hover,
-        .navbar-custom .nav-link:hover {
+        .navbar-brand:hover, .nav-link:hover {
             color: #0056b3; /* Darker shade on hover */
         }
     </style>
@@ -103,9 +103,9 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark navbar-custom fixed-top">
+    <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
         <div class="container">
-            <a class="navbar-brand" href="https://nomorewaste.fr/">NoMoreWaste</a>
+            <a class="navbar-brand" href="#">NoMoreWaste</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
