@@ -165,3 +165,17 @@ CREATE TABLE vehicles (
     assigned_driver_id INT,
     FOREIGN KEY (assigned_driver_id) REFERENCES users(id)
 );
+
+CREATE TABLE contact_requests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone VARCHAR(20),
+    message TEXT NOT NULL,
+    status ENUM('pending', 'processed') NOT NULL DEFAULT 'pending',
+    admin_id INT,
+    response TEXT,
+    submitted_at DATETIME NOT NULL,
+    processed_at DATETIME,
+    FOREIGN KEY (admin_id) REFERENCES users(id)
+);

@@ -2,7 +2,7 @@
 <footer class="footer bg-light text-dark text-center text-lg-start">
     <div class="container">
         <div class="row">
-            <!-- Logo and Description -->
+            
             <div class="col-lg-4 col-md-6 mb-4 mb-md-0 d-flex flex-column align-items-center">
                 <img src="/img/banner/logo_transparent.png" alt="NoMoreWaste Logo" class="footer-logo mb-3">
                 <p>
@@ -10,7 +10,6 @@
                 </p>
             </div>
 
-            <!-- Legal Information -->
             <div class="col-lg-4 col-md-6 mb-4 mb-md-0 d-flex flex-column align-items-center">
                 <h5 class="text-uppercase font-weight-bold">Mentions Légales</h5>
                 <ul class="list-unstyled">
@@ -29,7 +28,6 @@
                 </ul>
             </div>
 
-            <!-- Useful Links -->
             <div class="col-lg-4 col-md-6 mb-4 mb-md-0 d-flex flex-column align-items-center">
                 <h5 class="text-uppercase font-weight-bold">Liens Utiles</h5>
                 <ul class="list-unstyled">
@@ -37,7 +35,7 @@
                         <a href="#!" class="text-dark">FAQ</a>
                     </li>
                     <li>
-                        <a href="#!" class="text-dark">Nous contacter</a>
+                        <a href="contact.php" class="text-dark">Nous contacter</a>
                     </li>
                     <li>
                         <a href="#!" class="text-dark">Support</a>
