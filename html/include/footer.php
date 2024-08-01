@@ -4,7 +4,7 @@
         <div class="row">
             <!-- Logo and Description -->
             <div class="col-lg-4 col-md-6 mb-4 mb-md-0 d-flex flex-column align-items-center">
-                <img src="../img/banner/logo_transparent.png" alt="NoMoreWaste Logo" class="footer-logo mb-3">
+                <img src="/img/banner/logo_transparent.png" alt="NoMoreWaste Logo" class="footer-logo mb-3">
                 <p>
                     Combattre le gaspillage alimentaire et aider les communautés dans le besoin.
                 </p>

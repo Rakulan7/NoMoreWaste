@@ -11,7 +11,7 @@
         }
 
         .hero {
-            background: url('../img/banner/banner.jpg') center center no-repeat;
+            background: url('/img/banner/banner.jpg') center center no-repeat;
             background-size: cover;
             color: black;
             height: 70vh;
