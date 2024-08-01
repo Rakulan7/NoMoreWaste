@@ -1,4 +1,9 @@
-<?php include('include/header.php'); ?>
+<?php 
+
+$page_title = "A propos - ";
+include('include/header.php'); 
+
+?>
 
 <div class="container my-5">
     <div class="row justify-content-center">

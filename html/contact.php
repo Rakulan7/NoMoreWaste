@@ -1,6 +1,7 @@
 <?php
 session_start();
-include('include/header.php');
+$page_title = "Contact - ";
+include('include/header.php'); 
 ?>
 
 <div class="container my-5">
