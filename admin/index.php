@@ -1,1 +1,1 @@
-Hello Admin
+<?php include 'include/session.php'; ?>

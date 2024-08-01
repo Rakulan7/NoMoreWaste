@@ -1,1 +1,1 @@
-Hello Merchant
+<?php include 'include/session.php'; ?>
