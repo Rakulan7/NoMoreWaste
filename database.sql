@@ -14,7 +14,9 @@ CREATE TABLE users (
     address VARCHAR(100),
     city VARCHAR(100),
     country VARCHAR(100),
-    language VARCHAR(10)
+    language VARCHAR(10),
+    status ENUM('pending', 'approved', 'blocked') NOT NULL DEFAULT 'pending',
+    rejection_reason TEXT
 );
 
 -- Table des lieux de stockage

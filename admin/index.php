@@ -9,8 +9,10 @@ $conn = $database->getConnection();
 
 // Récupération des totaux
 $totalUsers = $conn->query("SELECT COUNT(*) FROM users")->fetch_array()[0];
-$totalRequests = $conn->query("SELECT COUNT(*) FROM contact_requests WHERE 'status' = 'processed'")->fetch_array()[0];
+$totalRequests = $conn->query("SELECT COUNT(*) FROM contact_requests WHERE status != 'processed'")->fetch_array()[0];
 $totalVolunteers = $conn->query("SELECT COUNT(*) FROM users WHERE role = 'volunteer'")->fetch_array()[0];
+$totalPendingVolunteers = $conn->query("SELECT COUNT(*) FROM users WHERE role = 'volunteer' AND status = 'pending'")->fetch_array()[0];
+$totalPendingMerchants = $conn->query("SELECT COUNT(*) FROM users WHERE role = 'merchant' AND status = 'pending'")->fetch_array()[0];
 
 // Récupérer les prochaines collectes en cours ou à venir
 $collectionsQuery = "
@@ -95,6 +97,30 @@ $conn->close();
                     <h5 class="card-title">Bénévoles Totals</h5>
                     <p class="card-text"><?php echo number_format($totalVolunteers); ?> bénévoles</p>
                     <a href="manage_users.php?role=volunteer" class="btn btn-light">Gérer les bénévoles</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <!-- Card: Bénévoles en attente -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card bg-warning text-white shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Bénévoles en attente</h5>
+                    <p class="card-text"><?php echo number_format($totalPendingVolunteers); ?> bénévoles en attente</p>
+                    <a href="manage_users.php?role=volunteer&status=pending" class="btn btn-light">Gérer les bénévoles en attente</a>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Card: Commerçants en attente -->
+        <div class="col-lg-6 col-md-12 mb-4">
+            <div class="card bg-warning text-white shadow-sm">
+                <div class="card-body">
+                    <h5 class="card-title">Commerçants en attente</h5>
+                    <p class="card-text"><?php echo number_format($totalPendingMerchants); ?> commerçants en attente</p>
+                    <a href="manage_users.php?role=merchant&status=pending" class="btn btn-light">Gérer les commerçants en attente</a>
                 </div>
             </div>
         </div>

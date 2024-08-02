@@ -29,9 +29,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 $error = "Vous devez être administrateur pour vous connecter.";
             }
         } else {
+            sleep(5);
             $error = "Mot de passe incorrect.";
         }
     } else {
+        sleep(5);
         $error = "Adresse e-mail non trouvée.";
     }
 

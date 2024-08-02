@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NoMoreWaste Admin</title>
+    <title><?php echo isset($page_title) ? $page_title : ''; ?>NoMoreWaste Admin</title>
     <link rel="icon" type="image/x-icon" href="/img/banner/favicon.ico">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
@@ -29,9 +29,8 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
-        <a class="navbar-brand" href="index.php">NoMoreWaste Admin</a>
+        <a class="navbar-brand" href="/">NoMoreWaste Admin</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -40,8 +39,26 @@
                 <li class="nav-item">
                     <a class="nav-link" href="index.php">Dashboard</a>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manage_users.php">Utilisateurs</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="usersDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Utilisateurs
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="usersDropdown">
+                        <a class="dropdown-item" href="manage_users.php?role=admin">Admins</a>
+                        <a class="dropdown-item" href="manage_users.php?role=merchant">Marchants</a>
+                        <a class="dropdown-item" href="manage_users.php?role=volunteer">Bénévoles</a>
+                        <a class="dropdown-item" href="manage_users.php?role=beneficiary">Bénéficiaires</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="activitiesDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Activités
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="activitiesDropdown">
+                        <a class="dropdown-item" href="manage_collections.php">Gérer les Collectes</a>
+                        <a class="dropdown-item" href="manage_deliveries.php">Gérer les Distributions</a>
+                        <a class="dropdown-item" href="manage_storage_locations.php">Gérer les Entrepôts</a>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="manage_requests.php">Demandes</a>
@@ -52,3 +69,6 @@
             </ul>
         </div>
     </nav>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
