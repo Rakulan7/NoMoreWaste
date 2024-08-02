@@ -32,13 +32,21 @@ if (!in_array($sortColumn, $allowedSortColumns)) {
     $sortColumn = 'submitted_at';
 }
 
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+$searchTerm = '%' . $conn->real_escape_string($searchTerm) . '%';
+
 $query = "SELECT cr.*, u.name AS admin_name 
           FROM contact_requests cr 
           LEFT JOIN users u ON cr.admin_id = u.id 
-          WHERE cr.status = 'pending' OR cr.status = 'processed' 
+          WHERE (cr.status = 'pending' OR cr.status = 'processed') 
+          AND (cr.name LIKE ? OR cr.email LIKE ? OR cr.phone LIKE ? OR cr.message LIKE ?)
           ORDER BY cr.$sortColumn $sortOrder";
 
-$result = $conn->query($query);
+$stmt = $conn->prepare($query);
+$stmt->bind_param("ssss", $searchTerm, $searchTerm, $searchTerm, $searchTerm);
+$stmt->execute();
+$result = $stmt->get_result();
+$stmt->close();
 
 $conn->close();
 ?>
@@ -51,6 +59,10 @@ $conn->close();
     <form method="get" action="manage_requests.php" class="mb-4">
         <div class="form-row">
             <div class="form-group col-md-6">
+                <label for="search">Recherche</label>
+                <input type="text" class="form-control" id="search" name="search" value="<?php echo htmlspecialchars($_GET['search'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" placeholder="Rechercher...">
+            </div>
+            <div class="form-group col-md-3">
                 <label for="sort">Trier par</label>
                 <select class="form-control" id="sort" name="sort">
                     <option value="submitted_at" <?php echo $sortColumn == 'submitted_at' ? 'selected' : ''; ?>>Date de Soumission</option>
@@ -59,7 +71,7 @@ $conn->close();
                     <option value="status" <?php echo $sortColumn == 'status' ? 'selected' : ''; ?>>Statut</option>
                 </select>
             </div>
-            <div class="form-group col-md-6">
+            <div class="form-group col-md-3">
                 <label for="order">Ordre</label>
                 <select class="form-control" id="order" name="order">
                     <option value="ASC" <?php echo $sortOrder == 'ASC' ? 'selected' : ''; ?>>Ascendant</option>
@@ -67,21 +79,21 @@ $conn->close();
                 </select>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary">Trier</button>
+        <button type="submit" class="btn btn-primary">Appliquer</button>
     </form>
 
     <?php if ($result->num_rows > 0): ?>
         <table class="table table-striped">
             <thead>
                 <tr>
-                    <th><a href="?sort=id&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>">ID</a></th>
-                    <th><a href="?sort=name&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>">Nom</a></th>
-                    <th><a href="?sort=email&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>">Email</a></th>
-                    <th><a href="?sort=phone&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>">Téléphone</a></th>
-                    <th><a href="?sort=message&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>">Message</a></th>
-                    <th><a href="?sort=status&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>">Statut</a></th>
-                    <th><a href="?sort=admin_name&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>">Admin</a></th>
-                    <th><a href="?sort=response&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>">Réponse</a></th>
+                    <th><a href="?sort=id&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>">ID</a></th>
+                    <th><a href="?sort=name&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>">Nom</a></th>
+                    <th><a href="?sort=email&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>">Email</a></th>
+                    <th><a href="?sort=phone&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>">Téléphone</a></th>
+                    <th><a href="?sort=message&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>">Message</a></th>
+                    <th><a href="?sort=status&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>">Statut</a></th>
+                    <th><a href="?sort=admin_name&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>">Admin</a></th>
+                    <th><a href="?sort=response&order=<?php echo $sortOrder === 'ASC' ? 'DESC' : 'ASC'; ?>&search=<?php echo urlencode($_GET['search'] ?? ''); ?>">Réponse</a></th>
                     <th>Actions</th>
                 </tr>
             </thead>

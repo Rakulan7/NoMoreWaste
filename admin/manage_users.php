@@ -3,34 +3,27 @@ session_start();
 include 'include/session.php';
 include 'include/database.php';
 
-// Connexion à la base de données
 $database = new Database();
 $conn = $database->getConnection();
 
-// Définir le rôle par défaut
 $role = isset($_GET['role']) ? $_GET['role'] : 'admin';
 
-// Échapper le rôle pour éviter les injections SQL
 $allowedRoles = ['admin', 'merchant', 'volunteer', 'beneficiary'];
 if (!in_array($role, $allowedRoles)) {
     $role = 'admin';
 }
 
-// Obtenir les paramètres de recherche et de tri
 $search = isset($_GET['search']) ? $_GET['search'] : '';
-$sort = isset($_GET['sort']) ? $_GET['sort'] : 'id'; // Tri par défaut
-$order = isset($_GET['order']) ? $_GET['order'] : 'ASC'; // Ordre par défaut
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'id';
+$order = isset($_GET['order']) ? $_GET['order'] : 'ASC';
 
-// Valider le tri
 $allowedSorts = ['id', 'name', 'email', 'phone', 'status'];
 if (!in_array($sort, $allowedSorts)) {
     $sort = 'id';
 }
 
-// Valider l'ordre
 $order = strtoupper($order) === 'DESC' ? 'DESC' : 'ASC';
 
-// Construire la requête SQL en fonction du rôle, de la recherche et du tri
 $query = "SELECT * FROM users WHERE role = ? AND (name LIKE ? OR email LIKE ?) ORDER BY $sort $order";
 $stmt = $conn->prepare($query);
 $searchParam = "%$search%";
@@ -47,7 +40,6 @@ $conn->close();
 <div class="container my-5">
     <h1 class="mb-4">Gérer les Utilisateurs</h1>
 
-    <!-- Sélecteur de rôle -->
     <div class="mb-4">
         <a href="manage_users.php?role=admin&search=<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>&sort=<?php echo htmlspecialchars($sort, ENT_QUOTES, 'UTF-8'); ?>&order=<?php echo htmlspecialchars($order, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary <?php echo $role == 'admin' ? 'active' : ''; ?>">Admins</a>
         <a href="manage_users.php?role=merchant&search=<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>&sort=<?php echo htmlspecialchars($sort, ENT_QUOTES, 'UTF-8'); ?>&order=<?php echo htmlspecialchars($order, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary <?php echo $role == 'merchant' ? 'active' : ''; ?>">Marchands</a>
@@ -58,7 +50,6 @@ $conn->close();
         <?php endif; ?>
     </div>
 
-    <!-- Formulaire de recherche -->
     <div class="mb-4">
         <form method="get" action="manage_users.php">
             <input type="hidden" name="role" value="<?php echo htmlspecialchars($role, ENT_QUOTES, 'UTF-8'); ?>">
@@ -71,7 +62,6 @@ $conn->close();
         </form>
     </div>
 
-    <!-- Sélecteur de tri -->
     <div class="mb-4">
         <a href="manage_users.php?role=<?php echo htmlspecialchars($role, ENT_QUOTES, 'UTF-8'); ?>&search=<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>&sort=id&order=<?php echo $order === 'ASC' ? 'DESC' : 'ASC'; ?>" class="btn btn-secondary">ID <?php echo $sort == 'id' ? ($order === 'ASC' ? '▲' : '▼') : ''; ?></a>
         <a href="manage_users.php?role=<?php echo htmlspecialchars($role, ENT_QUOTES, 'UTF-8'); ?>&search=<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>&sort=name&order=<?php echo $order === 'ASC' ? 'DESC' : 'ASC'; ?>" class="btn btn-secondary">Nom <?php echo $sort == 'name' ? ($order === 'ASC' ? '▲' : '▼') : ''; ?></a>
