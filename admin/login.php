@@ -10,7 +10,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT id, password, role FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id, password, role, status FROM users WHERE email = ?");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -19,14 +19,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = $result->fetch_assoc();
 
         if (password_verify($password, $user['password'])) {
-            if ($user['role'] === 'admin') {
-                $_SESSION['id_admin'] = $user['id'];
-                $_SESSION['role'] = $user['role'];
-
-                header("Location: index.php");
-                exit();
+            // Vérifier le statut de l'utilisateur
+            if ($user['status'] === 'blocked') {
+                $error = "Votre compte est bloqué. Veuillez contacter l'administrateur.";
             } else {
-                $error = "Vous devez être administrateur pour vous connecter.";
+                if ($user['role'] === 'admin') {
+                    $_SESSION['id_admin'] = $user['id'];
+                    $_SESSION['role'] = $user['role'];
+
+                    header("Location: index.php");
+                    exit();
+                } else {
+                    $error = "Vous devez être administrateur pour vous connecter.";
+                }
             }
         } else {
             sleep(5);
