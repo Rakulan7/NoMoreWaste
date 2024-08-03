@@ -53,27 +53,6 @@ CREATE TABLE services (
     available BOOLEAN NOT NULL DEFAULT TRUE
 );
 
--- Table des collectes
-CREATE TABLE collections (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    merchant_id INT,
-    collection_date DATE NOT NULL,
-    status ENUM('pending', 'scheduled', 'completed', 'canceled') NOT NULL,
-    FOREIGN KEY (merchant_id) REFERENCES users(id)
-);
-
--- Table des produits
-CREATE TABLE products (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    barcode VARCHAR(100) UNIQUE,
-    expiry_date DATE,
-    quantity INT,
-    collection_id INT,
-    storage_date DATE,
-    FOREIGN KEY (collection_id) REFERENCES collections(id)
-);
-
 -- Table des demandes de collecte
 CREATE TABLE collection_requests (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -86,6 +65,18 @@ CREATE TABLE collection_requests (
     storage_location_id INT,
     FOREIGN KEY (merchant_id) REFERENCES users(id),
     FOREIGN KEY (storage_location_id) REFERENCES storage_locations(id)
+);
+
+-- Table des produits
+CREATE TABLE products (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    barcode VARCHAR(100),
+    expiry_date DATE,
+    quantity INT,
+    collection_request_id INT,
+    storage_date DATE,
+    FOREIGN KEY (collection_request_id) REFERENCES collection_requests(id)
 );
 
 -- Table des livraisons

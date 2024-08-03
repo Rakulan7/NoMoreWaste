@@ -17,15 +17,15 @@ $totalPendingMerchants = $conn->query("SELECT COUNT(*) FROM users WHERE role = '
 // Récupérer les prochaines collectes en cours ou à venir
 $collectionsQuery = "
     SELECT 
-        c.id AS collection_id, 
-        c.collection_date, 
-        c.status AS collection_status, 
+        cr.id AS collection_id, 
+        cr.collection_date, 
+        cr.status AS collection_status, 
         u.name AS merchant_name 
-    FROM collections c
-    JOIN users u ON c.merchant_id = u.id
-    WHERE c.collection_date >= CURDATE() 
-    AND c.status != 'completed' 
-    ORDER BY c.collection_date ASC 
+    FROM collection_requests cr
+    JOIN users u ON cr.merchant_id = u.id
+    WHERE cr.collection_date >= CURDATE() 
+    AND cr.status != 'completed' 
+    ORDER BY cr.collection_date ASC 
     LIMIT 5
 ";
 $collectionsResult = $conn->query($collectionsQuery);
@@ -147,7 +147,7 @@ $conn->close();
                         <?php while ($collection = $collectionsResult->fetch_assoc()): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($collection['collection_id']); ?></td>
-                                <td><?php echo htmlspecialchars($collection['collection_date']); ?></td>
+                                <td><?php echo htmlspecialchars(date('d/m/Y', strtotime($collection['collection_date']))); ?></td>
                                 <td><?php echo htmlspecialchars(ucfirst($collection['collection_status'])); ?></td>
                                 <td><?php echo htmlspecialchars($collection['merchant_name']); ?></td>
                                 <td><a href="collection_details.php?id=<?php echo htmlspecialchars($collection['collection_id']); ?>" class="btn btn-info btn-sm">Détails</a></td>
@@ -189,10 +189,10 @@ $conn->close();
                         <?php while ($delivery = $deliveriesResult->fetch_assoc()): ?>
                             <tr>
                                 <td><?php echo htmlspecialchars($delivery['delivery_id']); ?></td>
-                                <td><?php echo htmlspecialchars($delivery['delivery_date']); ?></td>
+                                <td><?php echo htmlspecialchars(date('d/m/Y', strtotime($delivery['delivery_date']))); ?></td>
                                 <td><?php echo htmlspecialchars(ucfirst($delivery['delivery_status'])); ?></td>
                                 <td><?php echo htmlspecialchars($delivery['beneficiary_name']); ?></td>
-                                <td><?php echo htmlspecialchars($delivery['collection_date']); ?></td>
+                                <td><?php echo htmlspecialchars(date('d/m/Y', strtotime($delivery['collection_date']))); ?></td>
                                 <td><?php echo htmlspecialchars($delivery['merchant_address']); ?></td>
                                 <td><?php echo htmlspecialchars($delivery['storage_location']); ?></td>
                                 <td><?php echo htmlspecialchars($delivery['storage_address']); ?></td>
