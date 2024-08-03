@@ -13,6 +13,8 @@ if ($_SESSION['role'] !== 'admin') {
 $database = new Database();
 $conn = $database->getConnection();
 
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $email = $_POST['email'];
@@ -21,26 +23,42 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $role = $_POST['role'];
     $status = $_POST['status'];
 
-    // Assurez-vous que les administrateurs sont automatiquement approuvés
-    if ($role == 'admin') {
-        $status = 'approved'; // Les admins sont automatiquement approuvés
-    }
-
-    $query = "INSERT INTO users (name, email, password, phone, role, join_date, status) VALUES (?, ?, ?, ?, ?, NOW(), ?)";
+    // Vérification si l'email existe déjà
+    $query = "SELECT * FROM users WHERE email = ?";
     $stmt = $conn->prepare($query);
-    $stmt->bind_param("ssssss", $name, $email, $password, $phone, $role, $status);
+    $stmt->bind_param("s", $email);
     $stmt->execute();
-    $stmt->close();
+    $result = $stmt->get_result();
 
-    header("Location: manage_users.php?role=" . $role);
-    exit();
+    if ($result->num_rows > 0) {
+        $error = "Un compte avec cet email existe déjà.";
+    } else {
+        // Insérer l'utilisateur dans la base de données
+        $query = "INSERT INTO users (name, email, password, phone, role, join_date, status) VALUES (?, ?, ?, ?, ?, NOW(), ?)";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ssssss", $name, $email, $password, $phone, $role, $status);
+        $stmt->execute();
+        $stmt->close();
+
+        header("Location: manage_users.php?role=" . $role);
+        exit();
+    }
+    $stmt->close();
 }
+
+$conn->close();
 ?>
 
 <?php include('include/header.php'); ?>
 
 <div class="container my-5">
     <h1 class="mb-4">Ajouter un Utilisateur</h1>
+
+    <?php if ($error): ?>
+        <div class="alert alert-danger">
+            <?php echo $error; ?>
+        </div>
+    <?php endif; ?>
 
     <form method="post" action="add_user.php">
         <div class="form-group">
