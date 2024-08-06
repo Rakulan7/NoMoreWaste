@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : dim. 04 août 2024 à 16:22
+-- Généré le : mar. 06 août 2024 à 22:13
 -- Version du serveur : 8.2.0
 -- Version de PHP : 8.2.13
 
@@ -41,15 +41,15 @@ CREATE TABLE IF NOT EXISTS `beneficiaries` (
   `service_type` enum('food','shelter','clothing','other') NOT NULL,
   `notes` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `beneficiaries`
 --
 
 INSERT INTO `beneficiaries` (`id`, `name`, `contact_person`, `contact_email`, `contact_phone`, `address`, `city`, `country`, `registration_date`, `service_type`, `notes`) VALUES
-(1, 'Les Enfants du Soleil', 'Jean Dupont', 'jean.dupont@enfantsdusoleil.fr', '1234567890', '5 rue des Lilas', 'Paris', 'France', '2024-01-15', 'food', 'Association pour les enfants'),
-(2, 'Refuge des Chats', 'Marie Martin', 'marie.martin@refugedeschats.fr', '2345678901', '15 rue de la Gare', 'Lyon', 'France', '2024-01-20', 'shelter', 'Refuge pour animaux');
+(1, 'Les Enfants du Soleil', 'Jean Dupont', 'jean.dupont@enfantsdusoleil.fr', '1234567890', '5 rue des Lilas', 'Paris', 'France', '2024-01-15', 'clothing', 'Association pour les enfants'),
+(4, 'The University of Texas at Dallas', 'James', 'james@gmail.com', '0766589279', '6843 Main St, Frisco,', 'TEXAS', 'US', '2024-08-06', 'other', 'School charity');
 
 -- --------------------------------------------------------
 
@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS `collection_requests` (
   KEY `merchant_id` (`merchant_id`),
   KEY `storage_location_id` (`storage_location_id`),
   KEY `volunteer_id` (`volunteer_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `collection_requests`
@@ -80,7 +80,13 @@ CREATE TABLE IF NOT EXISTS `collection_requests` (
 
 INSERT INTO `collection_requests` (`id`, `merchant_id`, `request_date`, `collection_date`, `collection_time`, `status`, `merchant_address`, `storage_location_id`, `volunteer_id`) VALUES
 (1, 5, '2024-01-10', '2024-01-20', '10:00:00', 'completed', '23 rue Paris', 2, 4),
-(2, 5, '2024-02-01', '2024-08-06', '14:00:00', 'canceled', '3 boulevard Saint-Germain', 4, 0);
+(2, 5, '2024-02-01', '2024-08-06', '14:00:00', 'canceled', '3 boulevard Saint-Germain', 4, 4),
+(3, 7, '0000-00-00', '2024-08-14', '00:00:00', 'assigned', ', , ', 2, 4),
+(4, 7, '0000-00-00', '2024-08-08', '00:00:00', 'completed', ', , ', 1, 4),
+(5, 7, '0000-00-00', '2024-08-07', '00:00:00', 'completed', ', , ', 1, 0),
+(6, 7, '0000-00-00', '2024-08-07', '10:16:00', 'completed', '23 rue Paris 2024', 2, 10),
+(7, 7, '0000-00-00', '2024-08-09', '23:25:00', 'completed', ', , ', 1, 4),
+(8, 5, '0000-00-00', '2024-08-30', '21:30:00', 'pending', NULL, 1, 4);
 
 -- --------------------------------------------------------
 
@@ -132,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `deliveries` (
   KEY `beneficiary_id` (`beneficiary_id`),
   KEY `volunteer_id` (`volunteer_id`),
   KEY `storage_id` (`storage_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `deliveries`
@@ -140,7 +146,10 @@ CREATE TABLE IF NOT EXISTS `deliveries` (
 
 INSERT INTO `deliveries` (`id`, `collection_request_id`, `beneficiary_id`, `delivery_date`, `volunteer_id`, `storage_id`, `status`) VALUES
 (1, 1, 1, '2024-01-21', 4, 1, 'completed'),
-(2, 2, 2, '2024-02-16', 2, 2, 'pending');
+(4, 1, 4, '2024-08-07', 10, 1, 'completed'),
+(3, 1, 1, '2024-08-07', 4, 1, 'completed'),
+(5, 4, 1, '2024-08-08', 4, 2, 'pending'),
+(6, 5, 1, '2024-08-07', 10, NULL, 'pending');
 
 -- --------------------------------------------------------
 
