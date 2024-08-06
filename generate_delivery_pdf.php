@@ -112,7 +112,7 @@ function generateDeliveryPDF($delivery_id, $conn, $path)
     }
 
     // Sauvegarder le fichier PDF
-    $filePath = $path . 'pdf/delivery_' . $delivery_id . '.pdf';
+    $filePath = '/pdf/delivery_' . $delivery_id . '.pdf';
     $pdf->Output('F', $filePath);
 
     return $filePath;
