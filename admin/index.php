@@ -7,14 +7,12 @@ include 'include/database.php';
 $database = new Database();
 $conn = $database->getConnection();
 
-// Récupération des totaux
 $totalUsers = $conn->query("SELECT COUNT(*) FROM users")->fetch_array()[0];
 $totalRequests = $conn->query("SELECT COUNT(*) FROM contact_requests WHERE status != 'processed'")->fetch_array()[0];
 $totalVolunteers = $conn->query("SELECT COUNT(*) FROM users WHERE role = 'volunteer'")->fetch_array()[0];
 $totalPendingVolunteers = $conn->query("SELECT COUNT(*) FROM users WHERE role = 'volunteer' AND status = 'pending'")->fetch_array()[0];
 $totalPendingMerchants = $conn->query("SELECT COUNT(*) FROM users WHERE role = 'merchant' AND status = 'pending'")->fetch_array()[0];
 
-// Récupérer les prochaines collectes en cours ou à venir
 $collectionsQuery = "
     SELECT 
         cr.id AS collection_id, 
@@ -30,7 +28,6 @@ $collectionsQuery = "
 ";
 $collectionsResult = $conn->query($collectionsQuery);
 
-// Récupérer les prochaines livraisons en cours ou à venir
 $deliveriesQuery = "
     SELECT 
         d.id AS delivery_id, 
@@ -58,7 +55,6 @@ $conn->close();
 ?>
 
 <div class="container my-5">
-    <!-- Section: Messages d'accueil -->
     <div class="alert alert-info alert-dismissible fade show" role="alert">
         <h4 class="alert-heading">Bienvenue, Administrateur !</h4>
         <p>Utilisez le tableau de bord pour surveiller les activités récentes et gérer les utilisateurs et les demandes.</p>
@@ -72,7 +68,6 @@ $conn->close();
     <h1 class="mb-4">Tableau de bord</h1>
     
     <div class="row">
-        <!-- Card: Total des utilisateurs -->
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card bg-primary text-white shadow-sm">
                 <div class="card-body">
@@ -83,7 +78,6 @@ $conn->close();
             </div>
         </div>
         
-        <!-- Card: Total des demandes -->
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card bg-success text-white shadow-sm">
                 <div class="card-body">
@@ -94,7 +88,6 @@ $conn->close();
             </div>
         </div>
         
-        <!-- Card: Total des bénévoles -->
         <div class="col-lg-4 col-md-6 mb-4">
             <div class="card bg-info text-white shadow-sm">
                 <div class="card-body">
@@ -107,7 +100,6 @@ $conn->close();
     </div>
     
     <div class="row">
-        <!-- Card: Bénévoles en attente -->
         <div class="col-lg-6 col-md-12 mb-4">
             <div class="card bg-warning text-white shadow-sm">
                 <div class="card-body">
@@ -118,7 +110,6 @@ $conn->close();
             </div>
         </div>
         
-        <!-- Card: Commerçants en attente -->
         <div class="col-lg-6 col-md-12 mb-4">
             <div class="card bg-warning text-white shadow-sm">
                 <div class="card-body">
@@ -130,7 +121,6 @@ $conn->close();
         </div>
     </div>
 
-    <!-- Section: Prochaines Collectes -->
     <div class="card mb-4">
         <div class="card-header" style="background-color: #28a745; color: white;">
             Prochaines Collectes
@@ -166,7 +156,6 @@ $conn->close();
         </div>
     </div>
 
-    <!-- Section: Prochaines Livraisons -->
     <div class="card mb-4">
         <div class="card-header" style="background-color: #28a745; color: white;">
             Prochaines Livraisons

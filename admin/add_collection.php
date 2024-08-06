@@ -3,27 +3,22 @@ session_start();
 include 'include/session.php';
 include 'include/database.php';
 
-// Vérifie si l'utilisateur est administrateur
-if ($_SESSION['role'] !== 'admin') {
-    $_SESSION['error_message'] = "Accès refusé. Vous n'êtes pas autorisé à accéder à cette page.";
-    header("Location: manage_collections.php");
-    exit();
-}
-
 $database = new Database();
 $conn = $database->getConnection();
 
-$merchant_error = $date_error = $storage_error = '';
+$merchant_error = $date_error = $time_error = $storage_error = $volunteer_error = '';
 $success_message = '';
 
-// Récupérer les marchands et les lieux de stockage
 $merchants = $conn->query("SELECT id, name FROM users WHERE role='merchant'")->fetch_all(MYSQLI_ASSOC);
 $storage_locations = $conn->query("SELECT id, name, address FROM storage_locations")->fetch_all(MYSQLI_ASSOC);
+$volunteers = $conn->query("SELECT id, name FROM users WHERE role='volunteer'")->fetch_all(MYSQLI_ASSOC);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $merchant_id = $_POST['merchant_id'] ?? '';
     $collection_date = $_POST['collection_date'] ?? '';
+    $collection_time = $_POST['collection_time'] ?? '';
     $storage_location_id = $_POST['storage_location_id'] ?? '';
+    $volunteer_id = $_POST['volunteer_id'] ?? '';
 
     $is_valid = true;
 
@@ -37,15 +32,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $is_valid = false;
     }
 
+    if (empty($collection_time)) {
+        $time_error = "Veuillez sélectionner une heure de collecte.";
+        $is_valid = false;
+    }
+
     if (empty($storage_location_id)) {
         $storage_error = "Veuillez sélectionner un lieu de stockage.";
         $is_valid = false;
     }
 
+    if (empty($volunteer_id)) {
+        $volunteer_error = "Veuillez sélectionner un bénévole.";
+        $is_valid = false;
+    }
+
     if ($is_valid) {
-        $query = "INSERT INTO collection_requests (merchant_id, collection_date, storage_location_id, status) VALUES (?, ?, ?, 'pending')";
+        $query = "INSERT INTO collection_requests (merchant_id, collection_date, collection_time, storage_location_id, volunteer_id, status) VALUES (?, ?, ?, ?, ?, 'pending')";
         $stmt = $conn->prepare($query);
-        $stmt->bind_param("sss", $merchant_id, $collection_date, $storage_location_id);
+        $stmt->bind_param("sssss", $merchant_id, $collection_date, $collection_time, $storage_location_id, $volunteer_id);
         
         if ($stmt->execute()) {
             $_SESSION['success_message'] = "Collecte ajoutée avec succès.";
@@ -66,7 +71,6 @@ $conn->close();
 <div class="container my-5">
     <h1 class="mb-4">Ajouter une Collecte</h1>
 
-    <!-- Affichage des messages d'erreur ou de succès -->
     <?php if (isset($_SESSION['error_message'])): ?>
         <div class="alert alert-danger">
             <?php
@@ -108,6 +112,14 @@ $conn->close();
         </div>
 
         <div class="form-group">
+            <label for="collection_time">Heure de Collecte</label>
+            <input type="time" id="collection_time" name="collection_time" class="form-control">
+            <?php if ($time_error): ?>
+                <small class="form-text text-danger"><?php echo htmlspecialchars($time_error); ?></small>
+            <?php endif; ?>
+        </div>
+
+        <div class="form-group">
             <label for="storage_location_id">Lieu de Stockage</label>
             <select id="storage_location_id" name="storage_location_id" class="form-control">
                 <option value="">Sélectionner un lieu de stockage</option>
@@ -119,6 +131,21 @@ $conn->close();
             </select>
             <?php if ($storage_error): ?>
                 <small class="form-text text-danger"><?php echo htmlspecialchars($storage_error); ?></small>
+            <?php endif; ?>
+        </div>
+
+        <div class="form-group">
+            <label for="volunteer_id">Bénévole</label>
+            <select id="volunteer_id" name="volunteer_id" class="form-control">
+                <option value="">Sélectionner un bénévole</option>
+                <?php foreach ($volunteers as $volunteer): ?>
+                    <option value="<?php echo htmlspecialchars($volunteer['id']); ?>">
+                        <?php echo htmlspecialchars($volunteer['name']); ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <?php if ($volunteer_error): ?>
+                <small class="form-text text-danger"><?php echo htmlspecialchars($volunteer_error); ?></small>
             <?php endif; ?>
         </div>
 

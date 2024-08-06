@@ -3,14 +3,12 @@ session_start();
 include 'include/session.php';
 include 'include/database.php';
 
-// Connexion à la base de données
 $database = new Database();
 $conn = $database->getConnection();
 
 $userId = $_GET['id'] ?? '';
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Collecter les données du formulaire
     $name = $_POST['name'];
     $email = $_POST['email'];
     $phone = $_POST['phone'];
@@ -18,7 +16,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $rejection_reason = $_POST['rejection_reason'];
     $role = $_POST['role'];
 
-    // Mise à jour des informations de l'utilisateur
     $query = "UPDATE users SET name = ?, email = ?, phone = ?, status = ?, rejection_reason = ? WHERE id = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("sssssi", $name, $email, $phone, $status, $rejection_reason, $userId);
@@ -29,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     exit();
 }
 
-// Récupérer les informations de l'utilisateur pour l'édition
 $query = "SELECT * FROM users WHERE id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $userId);
@@ -42,7 +38,6 @@ if (!$user) {
     exit();
 }
 
-// Définir les options de statut
 $statusOptions = [
     'approved' => 'Validé',
     'blocked' => 'Bloqué',

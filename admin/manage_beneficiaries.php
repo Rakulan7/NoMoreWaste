@@ -7,7 +7,6 @@ include 'include/database.php';
 $database = new Database();
 $conn = $database->getConnection();
 
-// Récupérer tous les bénéficiaires
 $beneficiariesQuery = "SELECT * FROM beneficiaries";
 $beneficiariesResult = $conn->query($beneficiariesQuery);
 
@@ -17,7 +16,6 @@ $conn->close();
 <div class="container my-5">
     <h1 class="mb-4">Gérer les Bénéficiaires</h1>
 
-    <!-- Affichage des messages de succès et d'erreur -->
     <?php if (isset($_SESSION['success_message'])): ?>
         <div class="alert alert-success alert-dismissible fade show" role="alert">
             <?php echo $_SESSION['success_message']; unset($_SESSION['success_message']); ?>
@@ -36,12 +34,10 @@ $conn->close();
         </div>
     <?php endif; ?>
 
-    <!-- Bouton pour ouvrir le modal d'ajout -->
     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addBeneficiaryModal">
         Ajouter un Bénéficiaire
     </button>
 
-    <!-- Table des bénéficiaires -->
     <table class="table table-striped">
         <thead>
             <tr>
@@ -88,7 +84,6 @@ $conn->close();
     </table>
 </div>
 
-<!-- Modal pour ajouter un bénéficiaire -->
 <div class="modal fade" id="addBeneficiaryModal" tabindex="-1" role="dialog" aria-labelledby="addBeneficiaryModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -155,7 +150,6 @@ $conn->close();
     </div>
 </div>
 
-<!-- Modal pour afficher les détails du bénéficiaire -->
 <div class="modal fade" id="detailModal" tabindex="-1" role="dialog" aria-labelledby="detailModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">

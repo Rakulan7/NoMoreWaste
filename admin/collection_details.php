@@ -12,7 +12,6 @@ if (!$collection_id) {
     die('ID de collecte invalide.');
 }
 
-// Récupération des détails de la collecte, y compris l'adresse du marchand
 $query = "
     SELECT 
         cr.id AS collection_id, 
@@ -23,12 +22,11 @@ $query = "
         cr.merchant_address,
         sl.name AS storage_name,
         sl.address AS storage_address,
-        d.volunteer_id,
+        cr.volunteer_id,  -- Notez ce champ ajouté
         u.name AS volunteer_name
     FROM collection_requests cr
     LEFT JOIN storage_locations sl ON cr.storage_location_id = sl.id
-    LEFT JOIN deliveries d ON cr.id = d.collection_request_id
-    LEFT JOIN users u ON d.volunteer_id = u.id
+    LEFT JOIN users u ON cr.volunteer_id = u.id
     WHERE cr.id = ?
 ";
 
@@ -41,18 +39,15 @@ if (!$collection) {
     die('Aucune collecte trouvée.');
 }
 
-// Récupération des produits associés à la collecte
 $product_query = "SELECT * FROM products WHERE collection_request_id = ?";
 $product_stmt = $conn->prepare($product_query);
 $product_stmt->bind_param("i", $collection_id);
 $product_stmt->execute();
 $products_result = $product_stmt->get_result();
 
-// Récupération des lieux de stockage
 $storage_query = "SELECT * FROM storage_locations";
 $storage_result = $conn->query($storage_query);
 
-// Récupération des bénévoles
 $volunteer_query = "SELECT id, name FROM users WHERE role = 'volunteer'";
 $volunteer_result = $conn->query($volunteer_query);
 ?>
@@ -62,7 +57,6 @@ $volunteer_result = $conn->query($volunteer_query);
 <div class="container my-5">
     <h1 class="mb-4">Détails de la Collecte</h1>
 
-    <!-- Affichage du message d'erreur ou de succès -->
     <?php if (isset($_SESSION['error_message'])): ?>
         <div class="alert alert-danger">
             <?php
@@ -132,9 +126,9 @@ $volunteer_result = $conn->query($volunteer_query);
         </div>
 
         <button type="submit" class="btn btn-primary">Mettre à Jour</button>
+        <a href="manage_collections.php" class="btn btn-secondary">Retour</a>
     </form>
 
-    <!-- Affichage des produits associés à la collecte -->
     <h2 class="mt-5">Produits Donnés</h2>
     <?php if ($products_result->num_rows > 0): ?>
         <table class="table table-bordered mt-3">

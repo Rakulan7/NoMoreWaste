@@ -6,10 +6,8 @@ include 'include/database.php';
 $database = new Database();
 $conn = $database->getConnection();
 
-// Traitement des demandes POST pour ajouter, modifier ou supprimer un lieu de stockage
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['add_storage_location'])) {
-        // Ajouter un lieu de stockage
         $name = $_POST['name'] ?? '';
         $address = $_POST['address'] ?? '';
         $city = $_POST['city'] ?? '';
@@ -31,7 +29,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['error_message'] = 'Tous les champs obligatoires doivent être remplis.';
         }
     } elseif (isset($_POST['update_storage_location'])) {
-        // Modifier un lieu de stockage
         $id = $_POST['id'] ?? 0;
         $name = $_POST['name'] ?? '';
         $address = $_POST['address'] ?? '';
@@ -54,7 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['error_message'] = 'Tous les champs obligatoires doivent être remplis.';
         }
     } elseif (isset($_POST['delete_storage_location'])) {
-        // Supprimer un lieu de stockage
         $id = $_POST['id'] ?? 0;
 
         if ($id) {
@@ -76,7 +72,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit();
 }
 
-// Récupération des lieux de stockage existants
 $query = "SELECT * FROM storage_locations";
 $storage_locations_result = $conn->query($query);
 ?>
@@ -86,7 +81,6 @@ $storage_locations_result = $conn->query($query);
 <div class="container my-5">
     <h1 class="mb-4">Gestion des Lieux de Stockage</h1>
 
-    <!-- Affichage du message d'erreur ou de succès -->
     <?php if (isset($_SESSION['error_message'])): ?>
         <div class="alert alert-danger">
             <?php
@@ -103,12 +97,10 @@ $storage_locations_result = $conn->query($query);
         </div>
     <?php endif; ?>
 
-    <!-- Bouton pour ouvrir le modal d'ajout -->
     <button type="button" class="btn btn-primary mb-3" data-toggle="modal" data-target="#addStorageModal">
         Ajouter un Nouveau Lieu de Stockage
     </button>
 
-    <!-- Liste des lieux de stockage existants avec options pour modifier et supprimer -->
     <h2 class="mt-5">Lieux de Stockage Existants</h2>
     <?php if ($storage_locations_result->num_rows > 0): ?>
         <table class="table table-bordered mt-3">
@@ -135,14 +127,12 @@ $storage_locations_result = $conn->query($query);
                         <td><?php echo htmlspecialchars($location['contact_phone'], ENT_QUOTES, 'UTF-8'); ?></td>
                         <td><?php echo htmlspecialchars($location['contact_email'], ENT_QUOTES, 'UTF-8'); ?></td>
                         <td>
-                            <!-- Boutons Modifier et Supprimer -->
                             <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal<?php echo $location['id']; ?>">Modifier</button>
                             <form action="manage_storage_locations.php" method="post" style="display:inline;">
                                 <input type="hidden" name="id" value="<?php echo htmlspecialchars($location['id'], ENT_QUOTES, 'UTF-8'); ?>">
                                 <button type="submit" name="delete_storage_location" class="btn btn-danger btn-sm">Supprimer</button>
                             </form>
 
-                            <!-- Modal Modifier -->
                             <div class="modal fade" id="editModal<?php echo $location['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editModalLabel" aria-hidden="true">
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
@@ -195,7 +185,6 @@ $storage_locations_result = $conn->query($query);
         <p>Aucun lieu de stockage trouvé.</p>
     <?php endif; ?>
 
-    <!-- Modal Ajouter -->
     <div class="modal fade" id="addStorageModal" tabindex="-1" role="dialog" aria-labelledby="addStorageModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">

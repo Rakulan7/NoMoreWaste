@@ -19,7 +19,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $user = $result->fetch_assoc();
 
         if (password_verify($password, $user['password'])) {
-            // Vérifier le statut de l'utilisateur
             if ($user['status'] === 'blocked') {
                 $error = "Votre compte est bloqué. Veuillez contacter l'administrateur.";
             } else {

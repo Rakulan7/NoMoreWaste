@@ -10,7 +10,6 @@ if (!isset($_GET['id'])) {
 
 $userId = $_GET['id'];
 
-// Connexion à la base de données
 $database = new Database();
 $conn = $database->getConnection();
 

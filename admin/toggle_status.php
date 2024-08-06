@@ -11,7 +11,6 @@ if (!isset($_GET['id']) || !isset($_GET['status'])) {
 $userId = $_GET['id'];
 $status = $_GET['status'];
 
-// Connexion à la base de données
 $database = new Database();
 $conn = $database->getConnection();
 

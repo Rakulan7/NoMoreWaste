@@ -3,13 +3,11 @@ session_start();
 include 'include/session.php';
 include 'include/database.php';
 
-// Vérifier que l'utilisateur est un admin
 if ($_SESSION['role'] !== 'admin') {
     header("Location: manage_users.php?role=admin");
     exit();
 }
 
-// Connexion à la base de données
 $database = new Database();
 $conn = $database->getConnection();
 
@@ -23,7 +21,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $role = $_POST['role'];
     $status = $_POST['status'];
 
-    // Vérification si l'email existe déjà
     $query = "SELECT * FROM users WHERE email = ?";
     $stmt = $conn->prepare($query);
     $stmt->bind_param("s", $email);
@@ -33,7 +30,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($result->num_rows > 0) {
         $error = "Un compte avec cet email existe déjà.";
     } else {
-        // Insérer l'utilisateur dans la base de données
         $query = "INSERT INTO users (name, email, password, phone, role, join_date, status) VALUES (?, ?, ?, ?, ?, NOW(), ?)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("ssssss", $name, $email, $password, $phone, $role, $status);
