@@ -8,7 +8,7 @@ $conn = $database->getConnection();
 
 $role = isset($_GET['role']) ? $_GET['role'] : 'admin';
 
-$allowedRoles = ['admin', 'merchant', 'volunteer', 'beneficiary'];
+$allowedRoles = ['admin', 'merchant', 'volunteer'];
 if (!in_array($role, $allowedRoles)) {
     $role = 'admin';
 }
@@ -44,7 +44,7 @@ $conn->close();
         <a href="manage_users.php?role=admin&search=<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>&sort=<?php echo htmlspecialchars($sort, ENT_QUOTES, 'UTF-8'); ?>&order=<?php echo htmlspecialchars($order, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary <?php echo $role == 'admin' ? 'active' : ''; ?>">Admins</a>
         <a href="manage_users.php?role=merchant&search=<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>&sort=<?php echo htmlspecialchars($sort, ENT_QUOTES, 'UTF-8'); ?>&order=<?php echo htmlspecialchars($order, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary <?php echo $role == 'merchant' ? 'active' : ''; ?>">Marchands</a>
         <a href="manage_users.php?role=volunteer&search=<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>&sort=<?php echo htmlspecialchars($sort, ENT_QUOTES, 'UTF-8'); ?>&order=<?php echo htmlspecialchars($order, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary <?php echo $role == 'volunteer' ? 'active' : ''; ?>">Bénévoles</a>
-        <a href="manage_users.php?role=beneficiary&search=<?php echo htmlspecialchars($search, ENT_QUOTES, 'UTF-8'); ?>&sort=<?php echo htmlspecialchars($sort, ENT_QUOTES, 'UTF-8'); ?>&order=<?php echo htmlspecialchars($order, ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-primary <?php echo $role == 'beneficiary' ? 'active' : ''; ?>">Bénéficiaires</a>
+        <a href="manage_beneficiaries.php" class="btn btn-primary">Bénéficiaires</a>
         <?php if ($_SESSION['role'] === 'admin'): ?>
             <a href="add_user.php" class="btn btn-success">Ajouter un Utilisateur</a>
         <?php endif; ?>

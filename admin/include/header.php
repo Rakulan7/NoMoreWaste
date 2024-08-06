@@ -47,7 +47,7 @@
                         <a class="dropdown-item" href="manage_users.php?role=admin">Admins</a>
                         <a class="dropdown-item" href="manage_users.php?role=merchant">Marchants</a>
                         <a class="dropdown-item" href="manage_users.php?role=volunteer">Bénévoles</a>
-                        <a class="dropdown-item" href="manage_users.php?role=beneficiary">Bénéficiaires</a>
+                        <a class="dropdown-item" href="manage_beneficiaries.php">Bénéficiaires</a>
                     </div>
                 </li>
                 <li class="nav-item dropdown">

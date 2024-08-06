@@ -59,12 +59,16 @@ $conn->close();
 
 <div class="container my-5">
     <!-- Section: Messages d'accueil -->
-    <div class="alert alert-info">
+    <div class="alert alert-info alert-dismissible fade show" role="alert">
         <h4 class="alert-heading">Bienvenue, Administrateur !</h4>
         <p>Utilisez le tableau de bord pour surveiller les activités récentes et gérer les utilisateurs et les demandes.</p>
         <hr>
         <p class="mb-0">N'hésitez pas à consulter les pages disponibles via la barre de navigation pour accéder aux fonctionnalités administratives.</p>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
     </div>
+
     <h1 class="mb-4">Tableau de bord</h1>
     
     <div class="row">
