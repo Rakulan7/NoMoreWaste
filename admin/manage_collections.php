@@ -71,6 +71,13 @@ if ($result === false) {
         <a href="manage_collections.php?status=canceled" class="btn btn-primary">Annulées</a>
     </div>
 
+    <!-- Bouton pour créer une nouvelle collecte, visible uniquement pour les administrateurs -->
+    <?php if ($_SESSION['role'] === 'admin'): ?>
+        <div class="mb-3">
+            <a href="add_collection.php" class="btn btn-success">Créer une Nouvelle Collecte</a>
+        </div>
+    <?php endif; ?>
+
     <!-- Affichage des collectes -->
     <?php if ($result->num_rows > 0): ?>
         <table class="table table-bordered">

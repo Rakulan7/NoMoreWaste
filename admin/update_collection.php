@@ -24,22 +24,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Récupérer l'adresse du marchand si elle est vide
     if (empty($merchant_address)) {
-        // Récupérer l'adresse du marchand depuis la table users
         $merchant_query = "
             SELECT address, city, country 
             FROM users 
             WHERE id = (SELECT merchant_id FROM collection_requests WHERE id = ?)
         ";
         $stmt = $conn->prepare($merchant_query);
-        $stmt->bind_param("i", $collection_id);
-        $stmt->execute();
-        $merchant = $stmt->get_result()->fetch_assoc();
-        if ($merchant) {
-            $merchant_address = $merchant['address'] . ', ' . $merchant['city'] . ', ' . $merchant['country'];
+        if ($stmt) {
+            $stmt->bind_param("i", $collection_id);
+            $stmt->execute();
+            $merchant = $stmt->get_result()->fetch_assoc();
+            if ($merchant) {
+                $merchant_address = $merchant['address'] . ', ' . $merchant['city'] . ', ' . $merchant['country'];
+            } else {
+                $merchant_address = 'Adresse non trouvée';
+            }
+            $stmt->close();
         } else {
-            $merchant_address = 'Adresse non trouvée';
+            $_SESSION['error_message'] = 'Erreur lors de la récupération de l\'adresse du marchand.';
+            header('Location: collection_details.php?id=' . $collection_id);
+            exit();
         }
-        $stmt->close();
     }
 
     // Requête de mise à jour
@@ -60,11 +65,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($stmt->execute()) {
             $_SESSION['success_message'] = 'Les détails de la collecte ont été mis à jour.';
         } else {
-            $_SESSION['error_message'] = 'Échec de la mise à jour des détails de la collecte.';
+            $_SESSION['error_message'] = 'Échec de la mise à jour des détails de la collecte : ' . htmlspecialchars($stmt->error);
         }
         $stmt->close();
     } else {
-        $_SESSION['error_message'] = 'Échec de la préparation de la requête.';
+        $_SESSION['error_message'] = 'Échec de la préparation de la requête : ' . htmlspecialchars($conn->error);
     }
 
     $conn->close();
