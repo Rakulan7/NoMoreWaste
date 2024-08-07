@@ -107,7 +107,7 @@ function generatePDF($collection_id, $conn, $path)
     }
 
     // Sauvegarder le fichier PDF
-    $filePath = $path . 'pdf/collection_' . $collection_id . '.pdf';
+    $filePath = '/pdf/collection_' . $collection_id . '.pdf';
     $pdf->Output('F', $filePath);
 
     return $filePath;
