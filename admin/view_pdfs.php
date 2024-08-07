@@ -1,11 +1,18 @@
 <?php
 $page_title = 'Voir les PDF - ';
 include('include/header.php');
+include('include/database.php'); // Inclure le fichier contenant la classe Database
+
+// Instancier la classe Database et obtenir la connexion
+$database = new Database();
+$conn = $database->getConnection();
 
 $directory = '../pdf/';
 
+// Récupération de la liste des fichiers PDF
 $files = array_diff(scandir($directory), array('.', '..'));
 
+// Filtrer uniquement les fichiers PDF
 $pdf_files = array_filter($files, function ($file) use ($directory) {
     return is_file($directory . $file) && pathinfo($file, PATHINFO_EXTENSION) === 'pdf';
 });
@@ -39,6 +46,36 @@ usort($pdf_files, function ($a, $b) use ($sort_by, $sort_order, $directory) {
     }
     return 0;
 });
+
+// Fonction pour récupérer les détails d'une collecte ou d'une livraison
+function getDetails($file, $conn) {
+    if (strpos($file, 'collection_') === 0) {
+        $id = intval(str_replace(['collection_', '.pdf'], '', $file));
+        $query = "SELECT c.id, u.name AS volunteer_name, COUNT(p.id) AS product_count
+                  FROM collection_requests c
+                  LEFT JOIN users u ON c.merchant_id = u.id
+                  LEFT JOIN products p ON p.collection_request_id = c.id
+                  WHERE c.id = $id
+                  GROUP BY c.id";
+    } elseif (strpos($file, 'delivery_') === 0) {
+        $id = intval(str_replace(['delivery_', '.pdf'], '', $file));
+        $query = "SELECT d.id, u.name AS volunteer_name, COUNT(p.id) AS product_count
+                  FROM deliveries d
+                  LEFT JOIN users u ON d.volunteer_id = u.id
+                  LEFT JOIN products p ON p.collection_request_id = d.collection_request_id
+                  WHERE d.id = $id
+                  GROUP BY d.id";
+    } else {
+        return null;
+    }
+
+    $result = $conn->query($query);
+
+    if ($result && $result->num_rows > 0) {
+        return $result->fetch_assoc();
+    }
+    return null;
+}
 ?>
 
 <div class="container mt-5">
@@ -66,25 +103,41 @@ usort($pdf_files, function ($a, $b) use ($sort_by, $sort_order, $directory) {
             <option value="desc" <?php echo $sort_order === 'desc' ? 'selected' : ''; ?>>Décroissant</option>
         </select>
     </div>
-    <ul class="list-group">
-        <?php foreach ($pdf_files as $file): ?>
-            <li class="list-group-item">
-                <a href="<?php echo $directory . $file; ?>" target="_blank"><?php echo $file; ?></a>
-                <span class="badge badge-secondary float-right"><?php echo date('d-m-Y H:i:s', filemtime($directory . $file)); ?></span>
-                <span class="badge badge-info float-right mr-2">
-                    <?php
-                        if (strpos($file, 'collection_') === 0) {
-                            echo 'Collecte';
-                        } elseif (strpos($file, 'delivery_') === 0) {
-                            echo 'Livraison';
-                        } else {
-                            echo 'Autre';
-                        }
-                    ?>
-                </span>
-            </li>
-        <?php endforeach; ?>
-    </ul>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Nom du fichier</th>
+                <th>Date de création</th>
+                <th>Type</th>
+                <th>Nombre de produits</th>
+                <th>Bénévole responsable</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($pdf_files as $file): ?>
+                <?php
+                $details = getDetails($file, $conn);
+                ?>
+                <tr>
+                    <td><a href="<?php echo $directory . $file; ?>" target="_blank"><?php echo $file; ?></a></td>
+                    <td><?php echo date('d-m-Y H:i:s', filemtime($directory . $file)); ?></td>
+                    <td>
+                        <?php
+                            if (strpos($file, 'collection_') === 0) {
+                                echo 'Collecte';
+                            } elseif (strpos($file, 'delivery_') === 0) {
+                                echo 'Livraison';
+                            } else {
+                                echo 'Autre';
+                            }
+                        ?>
+                    </td>
+                    <td><?php echo $details ? $details['product_count'] : 'N/A'; ?></td>
+                    <td><?php echo $details ? $details['volunteer_name'] : 'N/A'; ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 </div>
 
 <script>
@@ -96,4 +149,12 @@ usort($pdf_files, function ($a, $b) use ($sort_by, $sort_order, $directory) {
     }
 </script>
 
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <?php include('include/footer.php'); ?>
+
+<?php
+$conn->close(); // Fermer la connexion
+?>

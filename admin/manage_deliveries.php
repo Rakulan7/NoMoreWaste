@@ -82,6 +82,7 @@ if ($result === false) {
                     <th>Nom du Bénéficiaire</th>
                     <th>Nom du Lieu de Stockage</th>
                     <th>Nom du Bénévole</th>
+                    <th>PDF</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -95,6 +96,16 @@ if ($result === false) {
                         <td><?php echo htmlspecialchars($row['beneficiary_name'] ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></td>
                         <td><?php echo htmlspecialchars($row['storage_name'] ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></td>
                         <td><?php echo htmlspecialchars($row['volunteer_name'] ?? 'N/A', ENT_QUOTES, 'UTF-8'); ?></td>
+                        <td>
+                            <?php
+                            $pdf_filename = '../pdf/delivery_' . $row['delivery_id'] . '.pdf';
+                            if (file_exists($pdf_filename)) {
+                                echo '<a href="' . htmlspecialchars($pdf_filename, ENT_QUOTES, 'UTF-8') . '" target="_blank" class="btn btn-secondary btn-sm">Voir PDF</a>';
+                            } else {
+                                echo 'N/A';
+                            }
+                            ?>
+                        </td>
                         <td>
                             <a href="delivery_details.php?id=<?php echo htmlspecialchars($row['delivery_id'] ?? '', ENT_QUOTES, 'UTF-8'); ?>" class="btn btn-info btn-sm">Voir Détails</a>
                         </td>

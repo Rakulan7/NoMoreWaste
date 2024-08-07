@@ -81,6 +81,7 @@ if ($result === false) {
                     <th>Statut</th>
                     <th>Nom du Lieu de Stockage</th>
                     <th>Adresse du Lieu de Stockage</th>
+                    <th>PDF</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -93,6 +94,16 @@ if ($result === false) {
                         <td><?php echo htmlspecialchars(ucfirst($row['collection_status'])); ?></td>
                         <td><?php echo htmlspecialchars($row['storage_name'] ?? 'N/A'); ?></td>
                         <td><?php echo htmlspecialchars($row['storage_address'] ?? 'N/A'); ?></td>
+                        <td>
+                            <?php
+                            $pdf_filename = '../pdf/collection_' . $row['collection_id'] . '.pdf';
+                            if (file_exists($pdf_filename)) {
+                                echo '<a href="' . htmlspecialchars($pdf_filename, ENT_QUOTES, 'UTF-8') . '" target="_blank" class="btn btn-secondary btn-sm">Voir PDF</a>';
+                            } else {
+                                echo 'N/A';
+                            }
+                            ?>
+                        </td>
                         <td>
                             <a href="collection_details.php?id=<?php echo htmlspecialchars($row['collection_id']); ?>" class="btn btn-info btn-sm">Voir Détails</a>
                         </td>
