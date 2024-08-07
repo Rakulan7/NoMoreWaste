@@ -111,7 +111,7 @@ function generateDeliveryPDF($delivery_id, $conn, $path)
         $pdf->Cell(0, 10, 'Aucun produit trouve pour cette collecte.', 0, 1);
     }
 
-    $filePath = '/pdf/delivery_' . $delivery_id . '.pdf';
+    $filePath = $path . 'pdf/delivery_' . $delivery_id . '.pdf';
     $pdf->Output('F', $filePath);
 
     return $filePath;
