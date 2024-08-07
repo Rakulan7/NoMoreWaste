@@ -8,23 +8,23 @@
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
-            padding-top: 56px; /* Pour l'espacement sous la navbar */
+            padding-top: 56px;
         }
 
         .navbar {
-            background-color: #28a745; /* Vert clair pour la navbar */
+            background-color: #28a745;
         }
 
         .navbar-brand, .nav-link {
-            color: #ffffff; /* Texte blanc pour contraster avec la couleur de fond */
+            color: #ffffff;
         }
 
         .navbar-brand:hover, .nav-link:hover {
-            color: #e2e6ea; /* Couleur plus claire pour le survol */
+            color: #e2e6ea;
         }
 
         .header-logo {
-            width: 100px; /* Ajustez la taille du logo si nécessaire */
+            width: 100px;
         }
     </style>
 </head>
@@ -60,8 +60,14 @@
                         <a class="dropdown-item" href="manage_storage_locations.php">Gérer les Entrepôts</a>
                     </div>
                 </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="manage_requests.php">Demandes</a>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="requestsDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Divers
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="requestsDropdown">
+                        <a class="dropdown-item" href="manage_requests.php">Demandes</a>
+                        <a class="dropdown-item" href="view_pdfs.php">Voir les PDF</a>
+                    </div>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="logout.php">Déconnexion</a>
