@@ -1,4 +1,3 @@
-    <!-- Footer -->
     <footer class="bg-success text-white text-center py-3 mt-4">
         <p>&copy; <?php echo date("Y"); ?> NoMoreWaste. Tous droits réservés.</p>
     </footer>
