@@ -7,11 +7,6 @@ include 'include/header.php';
 $database = new Database();
 $conn = $database->getConnection();
 
-if (!isset($_SESSION['id_merchant']) || $_SESSION['role'] !== 'merchant') {
-    header('Location: login.php');
-    exit();
-}
-
 $id_merchant = $_SESSION['id_merchant'];
 $status_filter = isset($_GET['status']) ? $_GET['status'] : 'created';
 
@@ -45,7 +40,7 @@ $collection_result = $stmt->get_result();
             <a href="merchant_collections.php?status=created" class="btn btn-primary <?php echo $status_filter === 'created' ? 'btn-active' : ''; ?>">Collectes Créées</a>
             <a href="merchant_collections.php?status=in-progress" class="btn btn-primary <?php echo $status_filter === 'in-progress' ? 'btn-active' : ''; ?>">Collectes en Cours</a>
             <a href="merchant_collections.php?status=completed" class="btn btn-primary <?php echo $status_filter === 'completed' ? 'btn-active' : ''; ?>">Collectes Terminées</a>
-            <a href="create_collection.php" class="btn btn-success">Créer une Collecte</a> <!-- Nouveau bouton -->
+            <a href="create_collection.php" class="btn btn-success">Créer une Collecte</a>
         </div>
 
         <div class="card">
