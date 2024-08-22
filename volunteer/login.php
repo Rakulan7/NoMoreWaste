@@ -1,9 +1,47 @@
+<?php
+session_start();
+include 'include/database.php';
+
+$error = '';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $database = new Database();
+    $conn = $database->getConnection();
+
+    $query = "SELECT * FROM users WHERE email = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("s", $email);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+
+        if (password_verify($password, $user['password'])) {
+            $_SESSION['volunteer_id'] = $user['id'];
+            $_SESSION['role'] = $user['role'];
+            header('Location: index.php');
+            exit();
+            
+        } else {
+            $error = "Mot de passe incorrect.";
+        }
+    } else {
+        $error = "Aucun compte trouvé avec cette adresse e-mail.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Connexion - NoMoreWaste</title>
+    <link rel="icon" type="image/x-icon" href="/img/banner/favicon.ico">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -14,7 +52,6 @@
             background-color: #f4f7f6;
             margin: 0;
         }
-
         .login-container {
             max-width: 400px;
             width: 100%;
@@ -24,41 +61,33 @@
             box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
-
         .login-container img {
             width: 120px;
             margin-bottom: 1rem;
         }
-
         .login-container h2 {
             margin-bottom: 1.5rem;
             font-size: 1.75rem;
             color: #343a40;
         }
-
         .login-container .form-group {
             margin-bottom: 1rem;
         }
-
         .login-container .btn {
             width: 100%;
             padding: 0.75rem;
             font-size: 1rem;
         }
-
         .alert {
             margin-top: 1rem;
         }
-
         .login-container p {
             margin-top: 1rem;
         }
-
         .login-container a {
             color: #007bff;
             text-decoration: none;
         }
-
         .login-container a:hover {
             text-decoration: underline;
         }
@@ -66,24 +95,30 @@
 </head>
 <body>
 
-    <div class="login-container">
-        <img src="/img/banner/logo_transparent.png" alt="NoMoreWaste Logo">
-        <h2>Connexion</h2>
+<div class="login-container">
+    <img src="/img/banner/logo_transparent.png" alt="NoMoreWaste Logo">
+    <h2>Connexion</h2>
 
-        <form action="login.php" method="POST">
-            <div class="form-group">
-                <label for="email">Adresse e-mail</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Mot de passe</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <button type="submit" class="btn btn-success">Se connecter</button>
-        </form>
+    <?php if ($error): ?>
+        <div class="alert alert-danger">
+            <?php echo htmlspecialchars($error); ?>
+        </div>
+    <?php endif; ?>
 
-        <p class="mt-3">Pas encore inscrit ? <a href="#">Créer un compte</a></p>
-    </div>
+    <form action="login.php" method="POST">
+        <div class="form-group">
+            <label for="email">Adresse e-mail</label>
+            <input type="email" class="form-control" id="email" name="email" required>
+        </div>
+        <div class="form-group">
+            <label for="password">Mot de passe</label>
+            <input type="password" class="form-control" id="password" name="password" required>
+        </div>
+        <button type="submit" class="btn btn-success">Se connecter</button>
+    </form>
+
+    <p class="mt-3">Pas encore inscrit ? <a href="register.php">Créer un compte</a></p>
+</div>
 
 </body>
 </html>

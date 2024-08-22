@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mar. 06 août 2024 à 22:13
+-- Généré le : jeu. 22 août 2024 à 19:02
 -- Version du serveur : 8.2.0
 -- Version de PHP : 8.2.13
 
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `beneficiaries` (
   `service_type` enum('food','shelter','clothing','other') NOT NULL,
   `notes` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `beneficiaries`
@@ -49,7 +49,8 @@ CREATE TABLE IF NOT EXISTS `beneficiaries` (
 
 INSERT INTO `beneficiaries` (`id`, `name`, `contact_person`, `contact_email`, `contact_phone`, `address`, `city`, `country`, `registration_date`, `service_type`, `notes`) VALUES
 (1, 'Les Enfants du Soleil', 'Jean Dupont', 'jean.dupont@enfantsdusoleil.fr', '1234567890', '5 rue des Lilas', 'Paris', 'France', '2024-01-15', 'clothing', 'Association pour les enfants'),
-(4, 'The University of Texas at Dallas', 'James', 'james@gmail.com', '0766589279', '6843 Main St, Frisco,', 'TEXAS', 'US', '2024-08-06', 'other', 'School charity');
+(4, 'The University of Texas at Dallas', 'James', 'james@gmail.com', '0766589279', '6843 Main St, Frisco,', 'TEXAS', 'US', '2024-08-06', 'other', 'School charity'),
+(5, 'test', 'James', 's.rakulan04@gmail.com', '0766589279', '6843 Main St, Frisco,', 'TEXAS', 'France', '2024-08-08', 'shelter', '');
 
 -- --------------------------------------------------------
 
@@ -72,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `collection_requests` (
   KEY `merchant_id` (`merchant_id`),
   KEY `storage_location_id` (`storage_location_id`),
   KEY `volunteer_id` (`volunteer_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `collection_requests`
@@ -86,7 +87,9 @@ INSERT INTO `collection_requests` (`id`, `merchant_id`, `request_date`, `collect
 (5, 7, '0000-00-00', '2024-08-07', '00:00:00', 'completed', ', , ', 1, 0),
 (6, 7, '0000-00-00', '2024-08-07', '10:16:00', 'completed', '23 rue Paris 2024', 2, 10),
 (7, 7, '0000-00-00', '2024-08-09', '23:25:00', 'completed', ', , ', 1, 4),
-(8, 5, '0000-00-00', '2024-08-30', '21:30:00', 'pending', NULL, 1, 4);
+(8, 5, '0000-00-00', '2024-08-30', '21:30:00', 'pending', NULL, 1, 4),
+(9, 7, '2024-08-12', '2024-08-14', '22:20:00', 'pending', '23 rue Paris', NULL, NULL),
+(10, 7, '2024-08-17', '2024-08-18', '22:50:00', 'assigned', '23 rue Paris', 1, 4);
 
 -- --------------------------------------------------------
 
@@ -148,7 +151,7 @@ INSERT INTO `deliveries` (`id`, `collection_request_id`, `beneficiary_id`, `deli
 (1, 1, 1, '2024-01-21', 4, 1, 'completed'),
 (4, 1, 4, '2024-08-07', 10, 1, 'completed'),
 (3, 1, 1, '2024-08-07', 4, 1, 'completed'),
-(5, 4, 1, '2024-08-08', 4, 2, 'pending'),
+(5, 4, 1, '2024-08-08', 4, 2, 'completed'),
 (6, 5, 1, '2024-08-07', 10, NULL, 'pending');
 
 -- --------------------------------------------------------
@@ -192,7 +195,16 @@ CREATE TABLE IF NOT EXISTS `products` (
   `storage_date` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `collection_request_id` (`collection_request_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Déchargement des données de la table `products`
+--
+
+INSERT INTO `products` (`id`, `name`, `barcode`, `expiry_date`, `quantity`, `collection_request_id`, `storage_date`) VALUES
+(1, 'Actimel', '08566746253', '2024-08-17', 20, 9, NULL),
+(2, 'Actimel', '08566746253', '2024-08-22', 3, 10, NULL),
+(3, 'Jambon', '0746388456424', '2024-08-19', 20, 10, NULL);
 
 -- --------------------------------------------------------
 
@@ -302,7 +314,7 @@ CREATE TABLE IF NOT EXISTS `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `role`, `join_date`, `membership_exp`, `address`, `city`, `country`, `language`, `status`, `rejection_reason`) VALUES
 (1, 'Alice Dupont', 'alice.dupont@example.com', '$2y$10$Th/lhvdPvcQ8r0xjTZdgBeeLrvE8toCnMBy65xhBS3kcyZbbf7lrW', '0102030405', 'admin', '2023-01-15', '2024-01-15', '123 Rue de Paris', 'Paris', 'France', 'FR', 'blocked', ''),
-(7, 'Ragepan Sivathasan', 's.ragepan06@gmail.com', '$2y$10$nTgJxob7kFfy1fuu/CLP/e1Piny495jMhNgJHI0RryK6dtIH5c1Ji', '0766543212', 'merchant', '2024-08-02', NULL, NULL, NULL, NULL, NULL, 'approved', NULL),
+(7, 'Ragepan Sivathasan', 's.ragepan06@gmail.com', '$2y$10$iNOkoPhCk9DnzMRsF0on/OMdADQ5A.XgCLXLRDH.reSeazuL.7Z3O', '0766543212', 'merchant', '2024-08-02', NULL, NULL, NULL, NULL, NULL, 'approved', NULL),
 (9, 'Sivathasan Rakulan', 's.rakulan04@gmail.com', '$2y$10$znyMulIVx1okVAZ.L6xNHuzeLy9anTlYM7DlYdjkWEPQYvsgoK3XS', '0766589279', 'admin', '2024-08-02', NULL, NULL, NULL, NULL, NULL, 'approved', ''),
 (4, 'David Chen', 'david.chen@example.com', '$2y$10$Th/lhvdPvcQ8r0xjTZdgBeeLrvE8toCnMBy65xhBS3kcyZbbf7lrW', '0809091012', 'volunteer', '2023-04-05', '2024-04-05', '123 Rue des Champs', 'Nantes', 'France', 'FR', 'approved', ''),
 (5, 'Eva Green', 'eva.green@example.com', '$2y$10$Th/lhvdPvcQ8r0xjTZdgBeeLrvE8toCnMBy65xhBS3kcyZbbf7lrW', '0901011121', 'merchant', '2023-05-10', '2024-05-10', '456 Route de la Gare', 'Dublin', 'Ireland', 'EN', 'blocked', 'test'),
