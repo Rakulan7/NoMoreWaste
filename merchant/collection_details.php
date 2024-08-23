@@ -4,7 +4,8 @@ include 'include/database.php';
 include 'include/header.php';
 
 if (empty($_GET['id'])) {
-    header('Location: merchant_collections.php?status=created&error=missing_id');
+    $_SESSION['error_message'] = "L'ID de la collecte est manquant.";
+    header('Location: merchant_collections.php?status=created');
     exit();
 }
 
@@ -25,7 +26,8 @@ $collection_result = $stmt->get_result();
 $collection = $collection_result->fetch_assoc();
 
 if (!$collection) {
-    header('Location: merchant_collections.php?status=created&error=collection_not_found');
+    $_SESSION['error_message'] = "La collecte demandée n'a pas été trouvée.";
+    header('Location: merchant_collections.php?status=created');
     exit();
 }
 

@@ -9,38 +9,39 @@ use PHPMailer\PHPMailer\Exception;
 require '../vendor/autoload.php';
 
 $env = parse_ini_file('../.env');
+$merchant_email = "s.rakulan04@gmail.com";
 
 //Create an instance; passing `true` enables exceptions
 $mail = new PHPMailer(true);
 
-try {
-    //Server settings
-    $mail->SMTPDebug = SMTP::DEBUG_SERVER;                      //Enable verbose debug output
-    $mail->isSMTP();                                            //Send using SMTP
-    $mail->Host       = $env["HOST"];                     //Set the SMTP server to send through
-    $mail->SMTPAuth   = true;                                   //Enable SMTP authentication
-    $mail->Username   = $env["MAIL"];                     //SMTP username
-    $mail->Password   = $env["PASSWORD"];                               //SMTP password
-    //$mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;            //Enable implicit TLS encryption
-    $mail->Port       = 587;                                    //TCP port to connect to; use 587 if you have set `SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS`
+try {                   
 
-    //Recipients
+    $mail->SMTPDebug = SMTP::DEBUG_SERVER;
+    $mail->isSMTP();
+    $mail->Host       = $env["HOST"];
+    $mail->SMTPAuth   = true;
+    $mail->Username   = $env["MAIL"];
+    $mail->Password   = $env["PASSWORD"];
+    $mail->Port       = 587;
+
     $mail->setFrom('no-reply@nomorewaste.fr', 'no-reply@nomorewaste.fr');
-    $mail->addAddress('s.rakulan04@gmail.com', 'Rakulan Sivathasan');     //Add a recipient
-    //$mail->addAddress('ellen@example.com');               //Name is optional
-    //$mail->addReplyTo('info@example.com', 'Information');
-    //$mail->addCC('cc@example.com');
-    //$mail->addBCC('bcc@example.com');
+    $mail->addAddress($merchant_email);
 
-    //Attachments
-    //$mail->addAttachment('/var/tmp/file.tar.gz');         //Add attachments
-    //$mail->addAttachment('/tmp/image.jpg', 'new.jpg');    //Optional name
+    $mail->CharSet = 'UTF-8';  // Set the character set to UTF-8
+    $mail->Encoding = 'base64'; // Use base64 encoding for the content
 
-    //Content
-    $mail->isHTML(true);                                  //Set email format to HTML
-    $mail->Subject = 'Here is the subject';
-    $mail->Body    = 'This is the HTML message body <b>in bold!</b>';
-    $mail->AltBody = 'This is the body in plain text for non-HTML mail clients';
+    $mail->isHTML(true);
+    $mail->Subject = "Confirmation de création de collecte";
+    $mail->Body    = "
+        <p>Bonjour,</p>
+        <p>Votre collecte a été créée avec succès.</p>
+        <p><strong>Détails de la collecte:</strong><br>
+        Date: 10/08/2023<br>
+        Heure: 10h20<br>
+        Lieu: 45 rue raymond counil 77500 CHELLES</p>
+        <p>Merci de votre contribution!</p>";
+
+    $mail->AltBody = "Bonjour,\n\nVotre collecte a été créée avec succès.\n\nDétails de la collecte:\nDate: 10/08/2023\nHeure: 10h20\nLieu: 45 rue raymond counil 77500 CHELLES\n\nMerci de votre contribution!";
 
     $mail->send();
     echo 'Message has been sent';

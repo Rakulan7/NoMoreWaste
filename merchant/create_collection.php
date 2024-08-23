@@ -1,31 +1,38 @@
 <?php
 session_start();
+require '../vendor/autoload.php';
 include 'include/database.php';
 include 'include/header.php';
+
+$env = parse_ini_file('../.env');
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 $database = new Database();
 $conn = $database->getConnection();
 
 $merchant_id = $_SESSION['id_merchant'];
-$query = "SELECT address FROM users WHERE id = ?";
+$query = "SELECT address, email FROM users WHERE id = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $merchant_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $merchant = $result->fetch_assoc();
 $default_address = $merchant['address'];
+$merchant_email = $merchant['email'];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $collection_date = $_POST['collection_date'];
     $collection_time = isset($_POST['collection_time']) ? $_POST['collection_time'] : null;
     $merchant_address = isset($_POST['merchant_address']) ? $_POST['merchant_address'] : $default_address;
-    
+
     if ($collection_time && $merchant_address) {
         $query = "INSERT INTO collection_requests (merchant_id, request_date, collection_date, collection_time, status, merchant_address) 
                   VALUES (?, NOW(), ?, ?, 'pending', ?)";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("isss", $merchant_id, $collection_date, $collection_time, $merchant_address);
-        
+
         if ($stmt->execute()) {
             $collection_id = $stmt->insert_id;
 
@@ -34,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $barcode = $product['barcode'];
                 $expiry_date = $product['expiry_date'];
                 $quantity = $product['quantity'];
-                
+
                 $query = "INSERT INTO products (name, barcode, expiry_date, quantity, collection_request_id) 
                           VALUES (?, ?, ?, ?, ?)";
                 $stmt = $conn->prepare($query);
@@ -42,22 +49,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute();
             }
 
-            $query = "SELECT email FROM users WHERE id = ?";
-            $stmt = $conn->prepare($query);
-            $stmt->bind_param("i", $merchant_id);
-            $stmt->execute();
-            $result = $stmt->get_result();
-            $merchant = $result->fetch_assoc();
-            $merchant_email = $merchant['email'];
+            $mail = new PHPMailer(true);
 
-            $to = $merchant_email;
-            $subject = "Confirmation de création de collecte";
-            $message = "Bonjour,\n\nVotre collecte a été créée avec succès.\n\nDétails de la collecte:\nDate: $collection_date\nHeure: $collection_time\nLieu: $merchant_address\n\nMerci de votre contribution!";
-            $headers = "From: no-reply@nomorewaste.com";
+            try {
+                $mail->isSMTP();
+                $mail->Host       = $env["HOST"];
+                $mail->SMTPAuth   = true;
+                $mail->Username   = $env["MAIL"];
+                $mail->Password   = $env["PASSWORD"];
+                $mail->Port       = 587;
 
-            mail($to, $subject, $message, $headers);
+                $mail->CharSet = 'UTF-8';
+                $mail->Encoding = 'base64';
 
-            $_SESSION['success_message'] = "Collecte créée avec succès. Un email de confirmation vous a été envoyé.";
+                $mail->setFrom('no-reply@nomorewaste.fr', 'no-reply@nomorewaste.fr');
+                $mail->addAddress($merchant_email);
+
+                $mail->isHTML(true);
+                $mail->Subject = "Confirmation de création de collecte";
+                $mail->Body    = "
+                    <p>Bonjour,</p>
+                    <p>Votre collecte a été créée avec succès.</p>
+                    <p><strong>Détails de la collecte:</strong><br>
+                    Date: $collection_date<br>
+                    Heure: $collection_time<br>
+                    Lieu: $merchant_address</p>
+                    <p>Merci de votre contribution!</p>";
+
+                $mail->AltBody = "Bonjour,\n\nVotre collecte a été créée avec succès.\n\nDétails de la collecte:\nDate: $collection_date\nHeure: $collection_time\nLieu: $merchant_address\n\nMerci de votre contribution!";
+
+                $mail->send();
+                $_SESSION['success_message'] = "Collecte créée avec succès. Un email de confirmation vous a été envoyé.";
+            } catch (Exception $e) {
+                $_SESSION['success_message'] = "Collecte créée avec succès. Cependant, l'envoi de l'email de confirmation a échoué.";
+            }
+
             header("Location: merchant_collections.php?status=created");
             exit();
         } else {
@@ -67,7 +93,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Heure de collecte ou lieu de stockage manquant.";
     }
 }
-
 
 $default_address = isset($merchant['address']) ? htmlspecialchars($merchant['address']) : '';
 ?>
@@ -88,7 +113,7 @@ $default_address = isset($merchant['address']) ? htmlspecialchars($merchant['add
 <body>
 <div class="container my-5">
     <h1>Créer une Nouvelle Collecte</h1>
-    
+
     <?php if (isset($error)): ?>
         <div class="alert alert-danger">
             <?php echo htmlspecialchars($error); ?>

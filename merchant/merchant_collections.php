@@ -26,20 +26,6 @@ $status_filter = isset($_GET['status']) && isset($status_map[$_GET['status']]) ?
 $error = '';
 $success = '';
 
-if (isset($_GET['error'])) {
-    switch ($_GET['error']) {
-        case 'missing_id':
-            $error = "L'ID de la collecte est manquant.";
-            break;
-        case 'collection_not_found':
-            $error = "La collecte demandée n'a pas été trouvée.";
-            break;
-        default:
-            $error = "Une erreur inconnue s'est produite.";
-            break;
-    }
-}
-
 $query = "SELECT cr.*, sl.address as storage_address 
           FROM collection_requests cr
           LEFT JOIN storage_locations sl ON cr.storage_location_id = sl.id
@@ -52,6 +38,21 @@ $collection_result = $stmt->get_result();
 
 <body>
     <div class="container">
+        <?php if (isset($_SESSION['error_message'])): ?>
+            <div class="my-4 alert alert-danger">
+                <?php
+                    echo htmlspecialchars($_SESSION['error_message'] ?? '');
+                    unset($_SESSION['error_message']);
+                ?>
+            </div>
+        <?php elseif (isset($_SESSION['success_message'])): ?>
+            <div class="my-4 alert alert-success">
+                <?php
+                    echo htmlspecialchars($_SESSION['success_message'] ?? '');
+                    unset($_SESSION['success_message']);
+                ?>
+            </div>
+        <?php endif; ?>
         <h1 class="my-4">Gestion des Collectes</h1>
 
         <?php if ($error): ?>
