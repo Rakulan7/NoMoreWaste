@@ -42,7 +42,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt->execute();
             }
 
-            $_SESSION['success_message'] = "Collecte créée avec succès.";
+            $query = "SELECT email FROM users WHERE id = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("i", $merchant_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            $merchant = $result->fetch_assoc();
+            $merchant_email = $merchant['email'];
+
+            $to = $merchant_email;
+            $subject = "Confirmation de création de collecte";
+            $message = "Bonjour,\n\nVotre collecte a été créée avec succès.\n\nDétails de la collecte:\nDate: $collection_date\nHeure: $collection_time\nLieu: $merchant_address\n\nMerci de votre contribution!";
+            $headers = "From: no-reply@nomorewaste.com";
+
+            mail($to, $subject, $message, $headers);
+
+            $_SESSION['success_message'] = "Collecte créée avec succès. Un email de confirmation vous a été envoyé.";
             header("Location: merchant_collections.php?status=created");
             exit();
         } else {
@@ -52,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error = "Heure de collecte ou lieu de stockage manquant.";
     }
 }
+
 
 $default_address = isset($merchant['address']) ? htmlspecialchars($merchant['address']) : '';
 ?>

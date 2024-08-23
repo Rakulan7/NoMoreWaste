@@ -8,10 +8,37 @@ $database = new Database();
 $conn = $database->getConnection();
 
 $id_merchant = $_SESSION['id_merchant'];
-$status_filter = isset($_GET['status']) ? $_GET['status'] : 'created';
+
+$status_map = [
+    'created' => 'pending',
+    'in-progress' => 'assigned',
+    'completed' => 'completed',
+    'canceled' => 'canceled'
+];
+
+if (empty($_GET['status'])){
+    header('location: merchant_collections.php?status=created');
+    exit;
+}
+
+$status_filter = isset($_GET['status']) && isset($status_map[$_GET['status']]) ? $status_map[$_GET['status']] : 'pending';
 
 $error = '';
 $success = '';
+
+if (isset($_GET['error'])) {
+    switch ($_GET['error']) {
+        case 'missing_id':
+            $error = "L'ID de la collecte est manquant.";
+            break;
+        case 'collection_not_found':
+            $error = "La collecte demandée n'a pas été trouvée.";
+            break;
+        default:
+            $error = "Une erreur inconnue s'est produite.";
+            break;
+    }
+}
 
 $query = "SELECT cr.*, sl.address as storage_address 
           FROM collection_requests cr
@@ -22,7 +49,6 @@ $stmt->bind_param("is", $id_merchant, $status_filter);
 $stmt->execute();
 $collection_result = $stmt->get_result();
 ?>
-
 
 <body>
     <div class="container">
@@ -37,14 +63,15 @@ $collection_result = $stmt->get_result();
         <?php endif; ?>
 
         <div class="mb-4">
-            <a href="merchant_collections.php?status=created" class="btn btn-primary <?php echo $status_filter === 'created' ? 'btn-active' : ''; ?>">Collectes Créées</a>
-            <a href="merchant_collections.php?status=in-progress" class="btn btn-primary <?php echo $status_filter === 'in-progress' ? 'btn-active' : ''; ?>">Collectes en Cours</a>
-            <a href="merchant_collections.php?status=completed" class="btn btn-primary <?php echo $status_filter === 'completed' ? 'btn-active' : ''; ?>">Collectes Terminées</a>
+            <a href="merchant_collections.php?status=created" class="btn btn-primary <?php echo $_GET['status'] === 'created' ? 'btn-active' : ''; ?>">Collectes Créées</a>
+            <a href="merchant_collections.php?status=in-progress" class="btn btn-primary <?php echo $_GET['status'] === 'in-progress' ? 'btn-active' : ''; ?>">Collectes en Cours</a>
+            <a href="merchant_collections.php?status=completed" class="btn btn-primary <?php echo $_GET['status'] === 'completed' ? 'btn-active' : ''; ?>">Collectes Terminées</a>
+            <a href="merchant_collections.php?status=canceled" class="btn btn-primary <?php echo $_GET['status'] === 'canceled' ? 'btn-active' : ''; ?>">Collectes Annulée</a>
             <a href="create_collection.php" class="btn btn-success">Créer une Collecte</a>
         </div>
 
         <div class="card">
-            <div class="card-header">Mes Collectes (<?php echo ucfirst($status_filter); ?>)</div>
+            <div class="card-header">Mes Collectes (<?php echo ucfirst($_GET['status']); ?>)</div>
             <div class="card-body">
                 <?php if ($collection_result->num_rows > 0): ?>
                     <table class="table table-bordered">
@@ -54,6 +81,8 @@ $collection_result = $stmt->get_result();
                                 <th>Date de Collecte</th>
                                 <th>Lieu de Stockage</th>
                                 <th>Statut</th>
+                                <th>PDF</th>
+                                <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -61,8 +90,21 @@ $collection_result = $stmt->get_result();
                                 <tr>
                                     <td><?php echo htmlspecialchars($row['id']); ?></td>
                                     <td><?php echo htmlspecialchars(date('d/m/Y', strtotime($row['collection_date']))); ?></td>
-                                    <td><?php echo htmlspecialchars($row['storage_address']); ?></td>
+                                    <td><?php echo htmlspecialchars($row['storage_address'] ?? 'N/A'); ?></td>
                                     <td><?php echo htmlspecialchars(ucfirst($row['status'])); ?></td>
+                                    <td>
+                                        <?php
+                                        $pdf_filename = '../pdf/collection_' . $row['id'] . '.pdf';
+                                        if (file_exists($pdf_filename)) {
+                                            echo '<a href="' . htmlspecialchars($pdf_filename, ENT_QUOTES, 'UTF-8') . '" target="_blank" class="btn btn-secondary btn-sm">Voir PDF</a>';
+                                        } else {
+                                            echo 'N/A';
+                                        }
+                                        ?>
+                                    </td>
+                                    <td>
+                                        <a href="collection_details.php?id=<?php echo htmlspecialchars($row['id']); ?>" class="btn btn-info btn-sm">Détails</a>
+                                    </td>
                                 </tr>
                             <?php endwhile; ?>
                         </tbody>

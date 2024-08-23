@@ -25,7 +25,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['role'] = $user['role'];
             header('Location: index.php');
             exit();
-            
         } else {
             $error = "Mot de passe incorrect.";
         }

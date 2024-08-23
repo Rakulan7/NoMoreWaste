@@ -7,7 +7,7 @@ include 'include/session.php';
 $database = new Database();
 $conn = $database->getConnection();
 
-$statuses = ['created', 'in-progress', 'completed'];
+$statuses = ['pending', 'assigned', 'completed'];
 
 $collections = [];
 foreach ($statuses as $status) {
@@ -52,7 +52,7 @@ $conn->close();
                         <h5 class="card-title">Collectes Créées</h5>
                     </div>
                     <div class="card-body">
-                        <p class="card-text"><?php echo htmlspecialchars($collections['created']); ?> collectes</p>
+                        <p class="card-text"><?php echo htmlspecialchars($collections['pending']); ?> collectes</p>
                         <a href="merchant_collections.php?status=created" class="btn btn-primary">Voir les Collectes</a>
                     </div>
                 </div>
@@ -64,7 +64,7 @@ $conn->close();
                         <h5 class="card-title">Collectes en Cours</h5>
                     </div>
                     <div class="card-body">
-                        <p class="card-text"><?php echo htmlspecialchars($collections['in-progress']); ?> collectes</p>
+                        <p class="card-text"><?php echo htmlspecialchars($collections['assigned']); ?> collectes</p>
                         <a href="merchant_collections.php?status=in-progress" class="btn btn-warning">Voir les Collectes</a>
                     </div>
                 </div>
