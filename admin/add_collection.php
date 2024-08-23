@@ -1,7 +1,13 @@
 <?php
 session_start();
+require '../vendor/autoload.php';
 include 'include/session.php';
 include 'include/database.php';
+
+$env = parse_ini_file('../.env');
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 
 $database = new Database();
 $conn = $database->getConnection();
@@ -47,13 +53,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $is_valid = false;
     }
 
+    $merchant_email = $conn->query("SELECT email FROM users WHERE id = ".$merchant_id."")->fetch_all(MYSQLI_ASSOC);
+    $volunteer_name = $conn->query("SELECT name FROM users WHERE id = ".$volunteer_id."")->fetch_all(MYSQLI_ASSOC);
+
     if ($is_valid) {
         $query = "INSERT INTO collection_requests (merchant_id, collection_date, collection_time, storage_location_id, volunteer_id, status) VALUES (?, ?, ?, ?, ?, 'pending')";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("sssss", $merchant_id, $collection_date, $collection_time, $storage_location_id, $volunteer_id);
         
         if ($stmt->execute()) {
-            $_SESSION['success_message'] = "Collecte ajoutée avec succès.";
+            $mail = new PHPMailer(true);
+            try {
+                $mail->isSMTP();
+                $mail->Host       = $env["HOST"];
+                $mail->SMTPAuth   = true;
+                $mail->Username   = $env["MAIL"];
+                $mail->Password   = $env["PASSWORD"];
+                $mail->Port       = 587;
+
+                $mail->CharSet = 'UTF-8';
+                $mail->Encoding = 'base64';
+
+                $mail->setFrom('no-reply@nomorewaste.fr', 'no-reply@nomorewaste.fr');
+                $mail->addAddress($merchant_email[0]["email"]);
+
+                $mail->isHTML(true);
+                $mail->Subject = "Confirmation de création de collecte";
+                $mail->Body    = "
+                    <p>Bonjour,</p>
+                    <p>Votre collecte a été créée avec succès par l'admin id $merchant_id suite à votre demande.</p>
+                    <p><strong>Détails de la collecte:</strong><br>
+                    Date: $collection_date<br>
+                    Heure: $collection_time<br>
+                    Lieu de stockage: $storage_location_id<br>
+                    Par : ".$volunteer_name[0]["name"]."</p>
+                    <p>Merci de votre contribution!</p>";
+
+                $mail->AltBody = "Bonjour,\n\nVotre collecte a été créée avec succès.\n\nDétails de la collecte:\nDate: $collection_date\nHeure: $collection_time\nLieu de stockage: $storage_location_id\n\nMerci de votre contribution!";
+
+                $mail->send();
+                $_SESSION['success_message'] = "Collecte créée avec succès. Un email de confirmation a été envoyé au marchant.";
+            } catch (Exception $e) {
+                $_SESSION['success_message'] = "Collecte créée avec succès. Cependant, l'envoi de l'email de confirmation a échoué.";
+            }
             header("Location: manage_collections.php");
             exit();
         } else {
