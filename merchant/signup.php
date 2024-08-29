@@ -1,9 +1,82 @@
+<?php
+session_start();
+
+include 'include/database.php';
+
+$database = new Database();
+$conn = $database->getConnection();
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['step']) && $_POST['step'] == '1') {
+        $_SESSION['signup_data'] = [
+            'name' => $_POST['name'],
+            'email' => $_POST['email'],
+            'phone' => $_POST['phone'],
+            'address' => $_POST['address'],
+            'city' => $_POST['city'],
+            'country' => $_POST['country']
+        ];
+
+        header("Location: signup.php?step=2");
+        exit();
+    } elseif (isset($_POST['step']) && $_POST['step'] == '2') {
+        $name = $_SESSION['signup_data']['name'];
+        $email = $_SESSION['signup_data']['email'];
+        $phone = $_SESSION['signup_data']['phone'];
+        $address = $_SESSION['signup_data']['address'];
+        $city = $_SESSION['signup_data']['city'];
+        $country = $_SESSION['signup_data']['country'];
+
+        $password = $_POST['password'];
+        $confirm_password = $_POST['confirm_password'];
+
+        if ($password !== $confirm_password) {
+            $error = "Les mots de passe ne correspondent pas.";
+        } else {
+            // Vérifier si l'e-mail existe déjà dans la base de données
+            $stmt = $conn->prepare("SELECT COUNT(*) FROM users WHERE email = ?");
+            $stmt->bind_param("s", $email);
+            $stmt->execute();
+            $stmt->bind_result($email_count);
+            $stmt->fetch();
+            $stmt->close();
+
+            if ($email_count > 0) {
+                $error = "Cette adresse e-mail est déjà utilisée.";
+            } else {
+                $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+                $role = 'merchant';
+                $join_date = date('Y-m-d');
+                $status = 'pending';
+
+                $stmt = $conn->prepare("INSERT INTO users (name, email, password, phone, role, join_date, address, city, country, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                $stmt->bind_param("ssssssssss", $name, $email, $hashed_password, $phone, $role, $join_date, $address, $city, $country, $status);
+
+                if ($stmt->execute()) {
+                    $_SESSION['success'] = "Votre inscription a été réussie. Veuillez attendre l'approbation de votre compte.";
+                    unset($_SESSION['signup_data']);
+                    header("Location: login.php");
+                    exit();
+                } else {
+                    $error = "Une erreur s'est produite lors de l'inscription. Veuillez réessayer.";
+                }
+
+                $stmt->close();
+            }
+        }
+    }
+}
+
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inscription - NoMoreWaste</title>
+    <link rel="icon" type="image/x-icon" href="/img/banner/favicon.ico">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -11,11 +84,11 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            margin: 0;
             background-color: #f4f7f6;
+            margin: 0;
         }
 
-        .form-container {
+        .signup-container {
             max-width: 500px;
             width: 100%;
             padding: 2rem;
@@ -25,93 +98,115 @@
             text-align: center;
         }
 
-        .form-container img {
+        .signup-container img {
             width: 120px;
             margin-bottom: 1rem;
         }
 
-        .form-container h2 {
+        .signup-container h2 {
             margin-bottom: 1.5rem;
             font-size: 1.75rem;
             color: #343a40;
         }
 
-        .form-container .form-group {
+        .signup-container .form-group {
             margin-bottom: 1rem;
+            text-align: left;
         }
 
-        .form-container .btn {
+        .signup-container .btn {
             width: 100%;
             padding: 0.75rem;
             font-size: 1rem;
         }
 
-        .form-container .alert {
+        .alert {
             margin-top: 1rem;
         }
 
-        .form-container p {
+        .signup-container p {
             margin-top: 1rem;
         }
 
-        .form-container a {
+        .signup-container a {
             color: #007bff;
             text-decoration: none;
         }
 
-        .form-container a:hover {
+        .signup-container a:hover {
             text-decoration: underline;
         }
     </style>
 </head>
 <body>
 
-    <div class="form-container">
+    <div class="signup-container">
         <img src="/img/banner/logo_transparent.png" alt="NoMoreWaste Logo">
-        <h2>Inscription</h2>
+        <h2>Inscription commerce</h2>
 
-        <form action="register_process.php" method="POST">
-            <div class="form-group">
-                <label for="firstname">Prénom</label>
-                <input type="text" class="form-control" id="firstname" name="firstname" required>
-            </div>
-            <div class="form-group">
-                <label for="lastname">Nom de famille</label>
-                <input type="text" class="form-control" id="lastname" name="lastname" required>
-            </div>
-            <div class="form-group">
-                <label for="email">Adresse e-mail</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Mot de passe</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-            <div class="form-group">
-                <label for="confirm_password">Confirmer le mot de passe</label>
-                <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
-            </div>
-            <div class="form-group">
-                <label for="phone">Téléphone</label>
-                <input type="tel" class="form-control" id="phone" name="phone">
-            </div>
-            <div class="form-group">
-                <label for="address">Adresse</label>
-                <input type="text" class="form-control" id="address" name="address">
-            </div>
-            <div class="form-group">
-                <label for="city">Ville</label>
-                <input type="text" class="form-control" id="city" name="city">
-            </div>
-            <div class="form-group">
-                <label for="country">Pays</label>
-                <input type="text" class="form-control" id="country" name="country">
-            </div>
-            <button type="submit" class="btn btn-success">S'inscrire</button>
-        </form>
+        <?php if (isset($error)): ?>
+            <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
+        <?php endif; ?>
 
-        <p class="mt-3">Déjà un compte ? <a href="login.php">Se connecter</a></p>
+        <?php if (!isset($_GET['step']) || $_GET['step'] == '1'): ?>
+            <form action="signup.php" method="POST">
+                <input type="hidden" name="step" value="1">
+                <div class="form-group">
+                    <label for="name">Nom complet</label>
+                    <input type="text" class="form-control" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Adresse e-mail</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="form-group">
+                    <label for="phone">Numéro de téléphone</label>
+                    <input type="text" class="form-control" id="phone" name="phone">
+                </div>
+                <div class="form-group">
+                    <label for="address">Adresse</label>
+                    <input type="text" class="form-control" id="address" name="address">
+                </div>
+                <div class="form-group">
+                    <label for="city">Ville</label>
+                    <input type="text" class="form-control" id="city" name="city">
+                </div>
+                <div class="form-group">
+                    <label for="country">Pays</label>
+                    <input type="text" class="form-control" id="country" name="country">
+                </div>
+                <button type="submit" class="btn btn-success">Continuer</button>
+            </form>
+        <?php elseif ($_GET['step'] == '2'): ?>
+            <form action="signup.php" method="POST">
+                <input type="hidden" name="step" value="2">
+                <div class="form-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" class="form-control" id="password" name="password" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm_password">Confirmer le mot de passe</label>
+                    <input type="password" class="form-control" id="confirm_password" name="confirm_password" required>
+                </div>
+                <button type="submit" class="btn btn-success">S'inscrire</button>
+            </form>
+        <?php endif; ?>
+
+        <p class="mt-3">Déjà inscrit ? <a href="login.php">Se connecter</a></p>
     </div>
+
+    <script>
+        // Validation du mot de passe côté client
+        document.querySelector('form').addEventListener('submit', function (e) {
+            var password = document.getElementById('password') ? document.getElementById('password').value : '';
+            var confirm_password = document.getElementById('confirm_password') ? document.getElementById('confirm_password').value : '';
+
+            if (password && confirm_password && password !== confirm_password) {
+                e.preventDefault();
+                alert("Les mots de passe ne correspondent pas.");
+            }
+        });
+    </script>
 
 </body>
 </html>

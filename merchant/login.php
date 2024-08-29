@@ -6,11 +6,17 @@ include 'include/database.php';
 $database = new Database();
 $conn = $database->getConnection();
 
+$success_message = '';
+if (isset($_SESSION['success'])) {
+    $success_message = $_SESSION['success'];
+    unset($_SESSION['success']);
+}
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $stmt = $conn->prepare("SELECT id, password, role, status FROM users WHERE email = ?");
+    $stmt = $conn->prepare("SELECT id, password, role, status FROM users WHERE email = ? AND status = 'approved'");
     $stmt->bind_param("s", $email);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -119,6 +125,10 @@ $conn->close();
     <div class="login-container">
         <img src="/img/banner/logo_transparent.png" alt="NoMoreWaste Logo">
         <h2>Connexion commerce</h2>
+
+        <?php if (!empty($success_message)): ?>
+            <div class="alert alert-success"><?php echo htmlspecialchars($success_message); ?></div>
+        <?php endif; ?>
 
         <?php if (isset($error)): ?>
             <div class="alert alert-danger"><?php echo htmlspecialchars($error); ?></div>
