@@ -93,7 +93,7 @@ $conn->close();
                     <?php else: ?>
                         <p>Aucune collecte prévue.</p>
                     <?php endif; ?>
-                    <a href="manage_collections.php" class="btn btn-light">Voir toutes les collectes</a>
+                    <a href="volunteer_collections.php" class="btn btn-light">Voir toutes les collectes</a>
                 </div>
             </div>
         </div>
@@ -128,7 +128,7 @@ $conn->close();
                     <?php else: ?>
                         <p>Aucune livraison prévue.</p>
                     <?php endif; ?>
-                    <a href="manage_deliveries.php" class="btn btn-light">Voir toutes les livraisons</a>
+                    <a href="volunteer_deliveries.php" class="btn btn-light">Voir toutes les livraisons</a>
                 </div>
             </div>
         </div>

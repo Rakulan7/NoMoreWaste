@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : jeu. 22 août 2024 à 19:02
+-- Généré le : ven. 30 août 2024 à 08:52
 -- Version du serveur : 8.2.0
 -- Version de PHP : 8.2.13
 
@@ -73,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `collection_requests` (
   KEY `merchant_id` (`merchant_id`),
   KEY `storage_location_id` (`storage_location_id`),
   KEY `volunteer_id` (`volunteer_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `collection_requests`
@@ -87,9 +87,31 @@ INSERT INTO `collection_requests` (`id`, `merchant_id`, `request_date`, `collect
 (5, 7, '0000-00-00', '2024-08-07', '00:00:00', 'completed', ', , ', 1, 0),
 (6, 7, '0000-00-00', '2024-08-07', '10:16:00', 'completed', '23 rue Paris 2024', 2, 10),
 (7, 7, '0000-00-00', '2024-08-09', '23:25:00', 'completed', ', , ', 1, 4),
-(8, 5, '0000-00-00', '2024-08-30', '21:30:00', 'pending', NULL, 1, 4),
-(9, 7, '2024-08-12', '2024-08-14', '22:20:00', 'pending', '23 rue Paris', NULL, NULL),
-(10, 7, '2024-08-17', '2024-08-18', '22:50:00', 'assigned', '23 rue Paris', 1, 4);
+(8, 5, '0000-00-00', '2024-08-30', '21:30:00', 'assigned', '45 rue raymond counil 77500 Chelles', 1, 4),
+(9, 7, '2024-08-12', '2024-08-14', '22:20:00', 'canceled', '23 rue Paris', NULL, NULL),
+(10, 7, '2024-08-17', '2024-08-18', '22:50:00', 'pending', '23 rue Paris', 0, 0),
+(11, 7, '2024-08-23', '2024-08-24', '14:00:00', 'pending', '45 rue raymond counil 77500 Chelles', NULL, NULL),
+(12, 11, '2024-08-23', '2024-08-24', '13:00:00', 'canceled', '45 rue raymond counil 77500 Chelles', NULL, NULL),
+(13, 11, '2024-08-23', '2024-08-24', '13:11:00', 'assigned', '45 rue raymond counil 77500 Chelles', 1, 4),
+(14, 11, '2024-08-23', '2024-08-24', '13:22:00', 'assigned', '23 rue Paris', 1, 4),
+(15, 11, '2024-08-23', '2024-08-24', '14:27:00', 'pending', '45 rue raymond counil 77500 Chelles', NULL, NULL),
+(16, 11, '2024-08-23', '2024-08-26', '14:05:00', 'pending', '45 rue raymond counil 77500 Chelles', NULL, NULL),
+(17, 11, '2024-08-23', '2024-08-28', '14:10:00', 'pending', '45 rue raymond counil 77500 Chelles', NULL, NULL),
+(18, 11, '0000-00-00', '2024-08-24', '14:24:00', 'assigned', '', 1, 4),
+(19, 11, '0000-00-00', '2024-08-24', '14:24:00', 'pending', NULL, 1, 4),
+(20, 11, '0000-00-00', '2024-08-24', '15:41:00', 'pending', NULL, 1, 4),
+(21, 11, '0000-00-00', '2024-08-24', '03:43:00', 'pending', NULL, 1, 4),
+(22, 11, '0000-00-00', '2024-08-24', '15:43:00', 'pending', NULL, 1, 4),
+(23, 11, '0000-00-00', '2024-08-24', '15:43:00', 'pending', NULL, 1, 4),
+(24, 11, '0000-00-00', '2024-08-24', '15:43:00', 'pending', NULL, 1, 4),
+(25, 11, '0000-00-00', '2024-08-24', '15:43:00', 'pending', NULL, 1, 4),
+(26, 11, '0000-00-00', '2024-08-24', '15:43:00', 'pending', NULL, 1, 4),
+(27, 11, '0000-00-00', '2024-08-24', '15:43:00', 'pending', NULL, 1, 4),
+(28, 11, '0000-00-00', '2024-08-24', '15:43:00', 'pending', NULL, 1, 4),
+(29, 11, '0000-00-00', '2024-08-24', '15:43:00', 'pending', NULL, 1, 4),
+(30, 11, '0000-00-00', '2024-08-24', '15:43:00', 'pending', NULL, 1, 4),
+(31, 11, '0000-00-00', '2024-08-24', '16:00:00', 'pending', NULL, 4, 10),
+(32, 13, '0000-00-00', '2024-09-01', '09:00:00', 'assigned', '45 rue raymond counil 77500 Chelles', 1, 10);
 
 -- --------------------------------------------------------
 
@@ -195,7 +217,7 @@ CREATE TABLE IF NOT EXISTS `products` (
   `storage_date` date DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `collection_request_id` (`collection_request_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `products`
@@ -204,7 +226,15 @@ CREATE TABLE IF NOT EXISTS `products` (
 INSERT INTO `products` (`id`, `name`, `barcode`, `expiry_date`, `quantity`, `collection_request_id`, `storage_date`) VALUES
 (1, 'Actimel', '08566746253', '2024-08-17', 20, 9, NULL),
 (2, 'Actimel', '08566746253', '2024-08-22', 3, 10, NULL),
-(3, 'Jambon', '0746388456424', '2024-08-19', 20, 10, NULL);
+(3, 'Jambon', '0746388456424', '2024-08-19', 20, 10, NULL),
+(4, 'Actimel', '08566746253', '2024-08-31', 40, 11, NULL),
+(5, 'Jambon', '0746388456424', '2024-09-12', 5, 11, NULL),
+(6, 'Actimel', '08566746253', '2024-08-31', 10, 12, NULL),
+(7, 'Actimel', '08566746253', '2024-08-30', 2, 13, NULL),
+(8, 'Actimel', '08566746253', '2024-08-22', 23, 14, NULL),
+(9, 'Actimel', '08566746253', '2024-08-31', 100, 15, NULL),
+(10, 'Actimel', '08566746253', '2024-09-26', 20, 16, NULL),
+(11, 'Actimel', '08566746253', '2024-09-24', 20, 17, NULL);
 
 -- --------------------------------------------------------
 
@@ -306,7 +336,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `rejection_reason` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `email` (`email`)
-) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Déchargement des données de la table `users`
@@ -318,7 +348,9 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `role`, `join_d
 (9, 'Sivathasan Rakulan', 's.rakulan04@gmail.com', '$2y$10$znyMulIVx1okVAZ.L6xNHuzeLy9anTlYM7DlYdjkWEPQYvsgoK3XS', '0766589279', 'admin', '2024-08-02', NULL, NULL, NULL, NULL, NULL, 'approved', ''),
 (4, 'David Chen', 'david.chen@example.com', '$2y$10$Th/lhvdPvcQ8r0xjTZdgBeeLrvE8toCnMBy65xhBS3kcyZbbf7lrW', '0809091012', 'volunteer', '2023-04-05', '2024-04-05', '123 Rue des Champs', 'Nantes', 'France', 'FR', 'approved', ''),
 (5, 'Eva Green', 'eva.green@example.com', '$2y$10$Th/lhvdPvcQ8r0xjTZdgBeeLrvE8toCnMBy65xhBS3kcyZbbf7lrW', '0901011121', 'merchant', '2023-05-10', '2024-05-10', '456 Route de la Gare', 'Dublin', 'Ireland', 'EN', 'blocked', 'test'),
-(10, 'Frisco Chamber of Commerce', 's.rakulan0@gmail.com', '$2y$10$VgeAhIYNvGG0NmgNiB03IupDpyzxPvVNN9448m9z72sCdkN8NIVrq', '', 'volunteer', '2024-08-02', NULL, NULL, NULL, NULL, NULL, 'approved', '');
+(11, 'Rakulan', 'rakulan.pro@gmail.com', '$2y$10$MVdRxrhmxYTT7bV0mRYb1.2ljiMty9.RhGUpjFPq/.UC.pUhEA0xq', '0766589279', 'merchant', '2024-08-23', NULL, NULL, NULL, NULL, NULL, 'approved', NULL),
+(10, 'Frisco Chamber of Commerce', 's.rakulan0@gmail.com', '$2y$10$HAJudGpKG8jWu7y1SYmWVOPLoxwVSKQD4mQaX//5y9HlCW7bz.YZG', '', 'volunteer', '2024-08-02', NULL, NULL, NULL, NULL, NULL, 'approved', ''),
+(14, 'Lighthouse', 's.rakulan0224@gmail.com', '$2y$10$I96h/KvQbFDLqBKIKnjCyOGUAizbD4sU7vRs7qOsevzfB5ly8JrXG', '0766589279', 'volunteer', '2024-08-29', NULL, '6843 Main St, Frisco,', 'TEXAS', 'France', NULL, 'approved', '');
 
 -- --------------------------------------------------------
 
