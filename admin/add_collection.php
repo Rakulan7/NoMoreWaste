@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $query = "INSERT INTO collection_requests (merchant_id, collection_date, collection_time, storage_location_id, volunteer_id, status) VALUES (?, ?, ?, ?, ?, 'pending')";
         $stmt = $conn->prepare($query);
         $stmt->bind_param("sssss", $merchant_id, $collection_date, $collection_time, $storage_location_id, $volunteer_id);
-        
+        /*
         if ($stmt->execute()) {
             $mail = new PHPMailer(true);
             try {
@@ -96,6 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             } catch (Exception $e) {
                 $_SESSION['success_message'] = "Collecte créée avec succès. Cependant, l'envoi de l'email de confirmation a échoué.";
             }
+            */
             header("Location: manage_collections.php");
             exit();
         } else {
