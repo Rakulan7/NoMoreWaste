@@ -96,13 +96,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             } catch (Exception $e) {
                 $_SESSION['success_message'] = "Collecte créée avec succès. Cependant, l'envoi de l'email de confirmation a échoué.";
             }
-            */
-            header("Location: manage_collections.php");
-            exit();
+            
         } else {
             $_SESSION['error_message'] = "Erreur lors de l'ajout de la collecte : " . htmlspecialchars($stmt->error);
         }
+            
+            */
         $stmt->close();
+        header("Location: manage_collections.php");
+        exit();
     }
 }
 
